@@ -1,19 +1,17 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
+from flask_sqlalchemy import SQLAlchemy
 
-Base = declarative_base()
+db = SQLAlchemy()
 
-class User(Base):
+class User(db.Model):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, nullable=False)
-    username = Column(String, unique=True, nullable=False)
-    password = Column(String, nullable=False)
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    username = db.Column(db.String, unique=True, nullable=False)
+    password = db.Column(db.String, nullable=False)
 
     def __init__(self, username, password):
         self.username = username
         self.password = password
 
-# create tables
-engine = create_engine('sqlite:///main.db', echo=True)
-Base.metadata.create_all(engine)
+    def __repr__(self):
+        return '<User %r>' % self.username

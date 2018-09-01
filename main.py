@@ -1,20 +1,19 @@
 from os import urandom
-
 from flask import Flask, flash, redirect, render_template, \
 request, session, abort, url_for
 
-from sqlalchemy.orm import sessionmaker
-from db import *
-
-engine = create_engine('sqlite:///main.db', echo=True)
+from flask_sqlalchemy import SQLAlchemy
+from db import db, User
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
+
 
 @app.route("/")
 def index():
-    Session = sessionmaker(bind=engine)
-    s = Session()
-    query = s.query(User).all()
+    query = User.query.all()
 
     if not session.get('loggedin'):
         return render_template('index.html', logged=False, data=query)
@@ -35,14 +34,17 @@ def signup():
                 flash('Invalid input')
                 return redirect(url_for("signup"))
             else:
-                Session = sessionmaker(bind=engine)
-                s = Session()
-                user = User(user, password)
-                s.add(user)
-                s.commit()
-                session['loggedin'] = True
+                query = User.query.filter(User.username.in_([user]))
+                if not query.first():
+                    user = User(user, password)
+                    db.session.add(user)
+                    db.session.commit()
+                    session['loggedin'] = True
 
-                return redirect(url_for("index"))
+                    return redirect(url_for("index"))
+                else:
+                    flash("Username is taken.")
+                    return redirect(url_for('signup'))
 
 @app.route("/login", methods=['POST', 'GET'])
 def login():
@@ -50,10 +52,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        Session = sessionmaker(bind=engine)
-        s = Session()
-
-        query = s.query(User).filter(User.username.in_([username]),
+        query = User.query.filter(User.username.in_([username]),
                                      User.password.in_([password]))
         result = query.first()
 

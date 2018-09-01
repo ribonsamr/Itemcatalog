@@ -8,13 +8,9 @@
     </ul>
   {% endif %}
 {% endwith %}
-{% if session['logged_in'] %}
-<p>You're logged in already!</p>
-{% else %}
-<form action="/login" method="POST">
+<form action="/signup" method="POST">
   <input type="username" name="username" placeholder="Username">
   <input type="password" name="password" placeholder="Password">
-  <input type="submit" value="Log in">
+  <input type="submit" value="Sign up">
 </form>
-{% endif %}
 {% endblock %}

@@ -1,40 +1,19 @@
-from flask import Flask
-from flask import flash, redirect, render_template, request, session, abort, url_for
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
+from sqlalchemy.ext.declarative import declarative_base
 
-import os
+Base = declarative_base()
 
-app = Flask(__name__)
+class User(Base):
+    __tablename__ = "users"
 
-@app.route("/")
-def index():
-    if not session.get('loggedin'):
-        return "<a href='login'>login</a>"
-    else:
-        return "<a href='logout'>logout</a>"
+    id = Column(Integer, primary_key=True, nullable=False)
+    username = Column(String, unique=True, nullable=False)
+    password = Column(String, nullable=False)
 
-@app.route("/login", methods=['POST', 'GET'])
-def login():
-    if request.method == 'POST':
-        if request.form['password'] == '123' and request.form['username'] == 'amr':
-            session['loggedin'] = True
-        else:
-            flash('wrong password')
-        return redirect(url_for('index'))
-    else:
-        if not session.get('loggedin'):
-            return render_template('login.html')
-        else:
-            return redirect(url_for('index'))
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
 
-@app.route('/logout')
-def logout():
-    session['loggedin'] = False
-    return redirect(url_for('index'))
-
-@app.errorhandler(404)
-def not_found(error):
-    return render_template('error.html'), 404
-
-
-app.secret_key = sKey = os.urandom(12)
-app.run(host='0.0.0.0', debug=True)
+# create tables
+engine = create_engine('sqlite:///main.db', echo=True)
+Base.metadata.create_all(engine)

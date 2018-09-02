@@ -1,49 +1,43 @@
 import os
-
 from flask import Flask, flash, redirect, render_template, \
                   request, session, url_for
-
 from flask_sqlalchemy import SQLAlchemy
-
-# Import the models's SQLAlchemy db
 from models import db
-
-# Import the User model.
 from models import User, Item
-
 from flask_wtf.csrf import CSRFProtect
 
-"""
-Setup
-"""
 # Init a Flask application
 app = Flask(__name__)
 
-app.config['CSRF_ENABLED'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///main_db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config.update(
+    SECRET_KEY=os.urandom(16)
+    HOST='0.0.0.0',
+    DEBUG=True,
+    ENV="development",
+    CSRF_ENABLED=True,
+    SQLALCHEMY_DATABASE_URI='postgresql:///main_db',
+    SQLALCHEMY_TRACK_MODIFICATIONS=False
+)
 
-# Load the app into the SQLAlchemy db
+# Load the app into SQLAlchemy Db and CSRFProtect.
 db.init_app(app)
 csrf = CSRFProtect(app)
-"""
-Routes
-"""
 
 
 def logged(session):
     return bool(session.get("session_login_status"))
 
 
-# Index
 @app.route("/")
 @app.route("/home")
 @app.route("/index")
 def index():
+    # load the users list and their password, for debug mode only.
     users = None
     if app.debug:
         users = User.query.all()
 
+    # load the items to show them.
     items = Item.query.all()
 
     if not logged(session):
@@ -72,18 +66,19 @@ def signup():
                 return redirect(url_for("signup"))
 
             else:
-                # Check if the username already exists
+                # check if the username already exists
                 query = User.query.filter(User.username.ilike(user))
 
                 if query.first():
-                    # Username is already taken.
                     flash("Username is taken.")
                     return redirect(url_for('signup'))
 
                 else:
+                    # register this new user
                     new_user = User(user, password)
                     db.session.add(new_user)
                     db.session.commit()
+
                     session['session_login_status'] = True
 
                     return redirect(url_for("index"))
@@ -94,12 +89,12 @@ def login():
     if request.method == 'POST':
         username, password = request.form['username'], request.form['password']
 
-        # Get the data from the database
+        # get the data from the database
         query = User.query.filter(User.username.ilike(username),
                                   User.password.ilike(password))
         result = query.first()
 
-        # If data exists, log the user in.
+        # if data exists, log the user in.
         if result:
             session['session_login_status'] = True
         else:
@@ -108,6 +103,7 @@ def login():
         return redirect(url_for('login'))
 
     else:
+        # redirect the user to index or login based on his log in status.
         if logged(session):
             return redirect(url_for('index'))
         else:
@@ -143,11 +139,13 @@ def add():
 
         return redirect(url_for("index"))
 
+
 @app.route('/<catag>/<name>')
 def view(catag, name):
     query = Item.query.filter(Item.name.ilike(name),
                               Item.catag.ilike(catag)).first()
     return render_template('view.html', query=query)
+
 
 @app.route('/search', methods=['POST', 'GET'])
 def search():
@@ -155,7 +153,8 @@ def search():
         return render_template('view.html')
     else:
         if request.form['text']:
-            query = Item.query.filter(Item.name.ilike(f"%{request.form['text']}%"))
+            query = Item.query.filter(Item.name.ilike(
+                                      f"%{request.form['text']}%"))
             if query.first():
                 return render_template('view.html', query=query)
             else:
@@ -164,6 +163,7 @@ def search():
         else:
             flash("Empty keyword.")
             return redirect(request.referrer or url_for("index"))
+
 
 @app.route('/<catag>/<name>/delete', methods=['POST', 'GET'])
 def delete(catag, name):
@@ -177,6 +177,7 @@ def delete(catag, name):
         return redirect(url_for("index"))
     else:
         return render_template("delete.html", query=query)
+
 
 @app.route('/<catag>/<name>/edit', methods=['POST', 'GET'])
 def edit(catag, name):
@@ -196,6 +197,7 @@ def edit(catag, name):
         flash("You need to log in first.")
         return redirect(url_for("login"))
 
+
 @app.route('/logout')
 def logout():
     session['session_login_status'] = False
@@ -206,6 +208,6 @@ def logout():
 def not_found(error):
     return render_template('error.html'), 404
 
+
 if __name__ == '__main__':
-    app.secret_key = sKey = os.urandom(12)
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0')

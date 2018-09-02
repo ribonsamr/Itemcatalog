@@ -4,7 +4,6 @@ from flask_migrate import Migrate, MigrateCommand
 
 from main import app, db
 
-app.config['CSRF_ENABLED'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///main_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 

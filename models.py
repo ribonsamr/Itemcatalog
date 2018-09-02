@@ -1,5 +1,4 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.dialects.postgresql import JSON
 
 # Init empty SQLAlchemy instance, will init the app later.
 db = SQLAlchemy()

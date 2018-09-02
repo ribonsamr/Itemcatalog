@@ -1,29 +1,34 @@
 #!/bin/bash
+if [[ $1 = -s ]]; then
+  ./install.sh 2> /dev/null
+  exit 1
+fi
+
+forcemigrate=false
+
 # install python required packages
 echo -e '-- Installing required packages --\n'
-pip3 install flask-migrate flask-script flask-sqlalchemy flask-wtf psycopg2-binary 2> /dev/null
-
+pip3 install flask-migrate flask-script flask-sqlalchemy flask-wtf psycopg2-binary
 
 # create postgresql database
 echo -e '\n-- Creating the database --\n'
 
-forcemigrate=false
-
 create_database() {
   if [[ $1 = true ]]; then
-    psql -c 'drop database main_db' 2> /dev/null
+    psql -c 'drop database main_db'
   fi
-  psql -c 'create database main_db' 2> /dev/null
+  psql -c 'create database main_db'
   forcemigrate=true
 }
 
-if psql -lqt 2> /dev/null | cut -d \| -f 1 | grep -qw 'main_db'; then
-    read -p "Database exists. Do you want to re-create it? (y\n): " answer
-    if [[ "${answer,,}" = 'y' ]]; then
-      create_database true
-    fi
+if psql -lqt | cut -d \| -f 1 | grep -qw 'main_db'; then
+  printf "Database exists. Do you want to re-create it? (y/n): "
+  read answer
+  if [[ "${answer,,}" = 'y' ]]; then
+    create_database true
+  fi
 else
-    create_database
+  create_database
 fi
 
 
@@ -46,7 +51,8 @@ if [ -d "${migrations}" ]; then
     migrate true
 
   else
-    read -p "Migrations directory already exists, do you want to remove it? (y/n): " answer
+    printf "Migrations directory already exists, do you want to remove it? (y/n): "
+    read answer
     if [[ "${answer,,}" = 'y' ]]; then
       migrate true
     else

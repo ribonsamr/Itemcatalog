@@ -176,6 +176,24 @@ def delete_row(catag, name):
     else:
         return render_template("delete.html", query=query)
 
+@app.route('/<catag>/<name>/edit', methods=['POST', 'GET'])
+def edit(catag, name):
+    if logged(session):
+        query = Item.query.filter(Item.name.ilike(name),
+                                  Item.catag.ilike(catag)).first()
+        if request.method == 'GET':
+            return render_template('edit.html', query=query)
+        else:
+            query.name = request.form['name']
+            query.catag = request.form['catag']
+            db.session.commit()
+            flash(f"Updated successfully to: {query.name} - {query.catag}")
+
+            return redirect(url_for("index"))
+    else:
+        flash("You need to log in first.")
+        return redirect(url_for("login"))
+
 @app.route('/logout')
 def logout():
     session['session_login_status'] = False

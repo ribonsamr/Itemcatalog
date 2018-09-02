@@ -17,12 +17,14 @@
   {% for item in query %}
     <li>{{ item.name }} - {{ item.catag }} -
       <a href="/{{item.catag}}/{{item.name}}">Link</a> -
+      <a href="/{{item.catag}}/{{item.name}}/edit">Edit</a> -
       <a href="/{{item.catag}}/{{item.name}}/delete">Delete</a>
     </li>
   {% endfor %}
 {% else %}
   <li>{{ query.name }} - {{ query.catag }} -
     <a href="/{{query.catag}}/{{query.name}}">Link</a> -
+    <a href="/{{query.catag}}/{{query.name}}/edit">Edit</a> -
     <a href="/{{query.catag}}/{{query.name}}/delete">Delete</a>
   </li>
 {% endif %}

@@ -30,7 +30,11 @@
 {% if items %}
     <ul class=items>
     {% for item in items %}
-      <li>{{ item.name }} - {{ item.catag }}</li>
+      <li>{{ item.name }} - {{ item.catag }} -
+        <a href="/{{item.catag}}/{{item.name}}">Link</a> -
+        <a href="/{{item.catag}}/{{item.name}}/edit">Edit</a> -
+        <a href="/{{item.catag}}/{{item.name}}/delete">Delete</a>
+      </li>
     {% endfor %}
     </ul>
 {% endif %}

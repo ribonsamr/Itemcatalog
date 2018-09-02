@@ -1,7 +1,9 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.postgresql import JSON
 
 # Init empty SQLAlchemy instance, will init the app later.
 db = SQLAlchemy()
+
 
 class User(db.Model):
     __tablename__ = "users"
@@ -16,6 +18,7 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.username
+
 
 class Item(db.Model):
     __tablename__ = "items"

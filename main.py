@@ -1,10 +1,15 @@
 import os
 
 from flask import Flask, flash, redirect, render_template, \
-request, session, url_for
+                  request, session, url_for
 
 from flask_sqlalchemy import SQLAlchemy
 
+# Import the models's SQLAlchemy db
+from models import db
+
+# Import the User model.
+from models import User, Item
 
 """
 Setup
@@ -12,41 +17,39 @@ Setup
 # Init a Flask application
 app = Flask(__name__)
 
-# Some SQLAlchemy configs
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
+app.config['CSRF_ENABLED'] = True
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///main_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-# Import the models' SQLAlchemy
-from models import db
 
 # Load the app into the SQLAlchemy db
 db.init_app(app)
 
-# Finally, import the User model.
-from models import User, Item
-
-
 """
 Routes
 """
+
+
 def logged(session):
     return bool(session.get("session_login_status"))
+
 
 # Index
 @app.route("/")
 @app.route("/home")
 @app.route("/index")
 def index():
-    users=None
+    users = None
     if app.debug:
         users = User.query.all()
 
     items = Item.query.all()
 
     if not logged(session):
-        return render_template('index.html', logged=False, data=users, items=items)
+        return render_template('index.html', logged=False, data=users,
+                               items=items)
     else:
-        return render_template('index.html', logged=True, data=users, items=items)
+        return render_template('index.html', logged=True, data=users,
+                               items=items)
 
 
 @app.route("/signup", methods=['POST', 'GET'])
@@ -98,7 +101,7 @@ def login():
         if result:
             session['session_login_status'] = True
         else:
-            flash('Wrong username or password: %s' %(username))
+            flash('Wrong username or password: %s' % (username))
 
         return redirect(url_for('login'))
 
@@ -107,6 +110,7 @@ def login():
             return redirect(url_for('index'))
         else:
             return render_template('login.html')
+
 
 @app.route("/add", methods=['POST', 'GET'])
 def add():
@@ -118,19 +122,19 @@ def add():
             if name and catag:
                 query = Item.query.filter(Item.name.ilike(name))
                 if query.first():
-                    flash("Item: %s already exists." %(name))
+                    flash("Item: %s already exists." % (name))
                     return redirect(url_for("add"))
                 else:
                     db.session.add(Item(name, catag))
                     db.session.commit()
-                    flash("%s added in %s successfully." %(name, catag))
+                    flash("%s added in %s successfully." % (name, catag))
 
                     return redirect(url_for("index"))
             else:
                 flash("Missing input.")
                 return redirect(url_for("add"))
     else:
-        flash("We're sorry, this page is only for member." \
+        flash("We're sorry, this page is only for member."
               + "If you have an account please log in")
 
         return redirect(url_for("index"))
@@ -146,6 +150,6 @@ def logout():
 def not_found(error):
     return render_template('error.html'), 404
 
-
-app.secret_key = sKey = os.urandom(12)
-app.run(host='0.0.0.0', debug=True)
+if __name__ == '__main__':
+    app.secret_key = sKey = os.urandom(12)
+    app.run(host='0.0.0.0', debug=True)

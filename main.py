@@ -166,7 +166,7 @@ def search():
             return redirect(request.referrer or url_for("index"))
 
 @app.route('/<catag>/<name>/delete', methods=['POST', 'GET'])
-def delete_row(catag, name):
+def delete(catag, name):
     query = Item.query.filter(Item.name.ilike(name),
                               Item.catag.ilike(catag))
     if request.method == 'POST':

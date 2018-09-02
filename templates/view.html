@@ -8,7 +8,7 @@
   {% endif %}
 {% endwith %}
 
-<form action="/search" method="post">
+<form action="{{ url_for('search') }}" method="post">
   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
   <input type="text" name="text" placeholder="keyword">
   <button type="submit" name="search">Search</button>
@@ -17,15 +17,15 @@
 {% if query is iterable %}
   {% for item in query %}
     <li>{{ item.name }} - {{ item.catag }} -
-      <a href="/{{item.catag}}/{{item.name}}">Link</a> -
-      <a href="/{{item.catag}}/{{item.name}}/edit">Edit</a> -
-      <a href="/{{item.catag}}/{{item.name}}/delete">Delete</a>
+      <a href="{{ url_for('view', catag=item.catag, name=item.name) }}">Link</a> -
+      <a href="{{ url_for('edit', catag=item.catag, name=item.name) }}">Edit</a> -
+      <a href="{{ url_for('delete', catag=item.catag, name=item.name) }}">Delete</a>
     </li>
   {% endfor %}
 {% else %}
   <li>{{ query.name }} - {{ query.catag }} -
-    <a href="/{{query.catag}}/{{query.name}}">Link</a> -
-    <a href="/{{query.catag}}/{{query.name}}/edit">Edit</a> -
-    <a href="/{{query.catag}}/{{query.name}}/delete">Delete</a>
+    <a href="{{ url_for('view', catag=query.catag, name=query.name) }}">Link</a> -
+    <a href="{{ url_for('edit', catag=query.catag, name=query.name) }}">Edit</a> -
+    <a href="{{ url_for('delete', catag=query.catag, name=query.name) }}">Delete</a>
   </li>
 {% endif %}

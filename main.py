@@ -1,15 +1,18 @@
-from os import urandom
+import os
 from flask import Flask, flash, redirect, render_template, \
 request, session, abort, url_for
 
 from flask_sqlalchemy import SQLAlchemy
-from db import db, User
 
 app = Flask(__name__)
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+from models import db
 db.init_app(app)
 
+from models import User
 
 @app.route("/")
 def index():
@@ -78,5 +81,5 @@ def not_found(error):
     return render_template('error.html'), 404
 
 
-app.secret_key = sKey = urandom(12)
+app.secret_key = sKey = os.urandom(12)
 app.run(host='0.0.0.0', debug=True)

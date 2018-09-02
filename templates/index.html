@@ -10,12 +10,14 @@
 {% endwith %}
 
 {% if logged %}
+  <a href="add">add items</a>
   <a href="logout">logout</a>
 {% else %}
   <a href="signup">sign up</a>
   <a href="login">login</a>
 {% endif %}
 
+<p>Users:</p>
 {% if data %}
   <ul class=data>
   {% for dt in data %}
@@ -23,5 +25,15 @@
   {% endfor %}
   </ul>
 {% endif %}
+
+<p>Items:</p>
+{% if items %}
+    <ul class=items>
+    {% for item in items %}
+      <li>{{ item.name }} - {{ item.catag }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
 
 {% endblock %}

@@ -9,9 +9,18 @@
   {% endif %}
 {% endwith %}
 
-<form action="/login" method="POST">
-  <input type="username" name="username" placeholder="Username">
-  <input type="password" name="password" placeholder="Password">
+{% if items %}
+    <ul class=items>
+    {% for item in items %}
+      <li>{{ item }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+<form action="add" method="POST">
+  <input type="input" name="name" placeholder="Name">
+  <input type="input" name="catag" placeholder="catag">
   <input type="submit" value="Log in">
 </form>
+
 {% endblock %}

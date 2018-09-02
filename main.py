@@ -23,7 +23,7 @@ from models import db
 db.init_app(app)
 
 # Finally, import the User model.
-from models import User
+from models import User, Item
 
 
 """
@@ -37,12 +37,16 @@ def logged(session):
 @app.route("/home")
 @app.route("/index")
 def index():
-    query = User.query.all()
+    users=None
+    if app.debug:
+        users = User.query.all()
+
+    items = Item.query.all()
 
     if not logged(session):
-        return render_template('index.html', logged=False, data=query)
+        return render_template('index.html', logged=False, data=users, items=items)
     else:
-        return render_template('index.html', logged=True, data=query)
+        return render_template('index.html', logged=True, data=users, items=items)
 
 
 @app.route("/signup", methods=['POST', 'GET'])
@@ -64,7 +68,7 @@ def signup():
 
             else:
                 # Check if the username already exists
-                query = User.query.filter(User.username.in_([user]))
+                query = User.query.filter(User.username.in_([user.lower()]))
 
                 if query.first():
                     # Username is already taken.
@@ -72,7 +76,7 @@ def signup():
                     return redirect(url_for('signup'))
 
                 else:
-                    new_user = User(user, password)
+                    new_user = User(user.lower(), password)
                     db.session.add(new_user)
                     db.session.commit()
                     session['session_login_status'] = True
@@ -86,7 +90,7 @@ def login():
         username, password = request.form['username'], request.form['password']
 
         # Get the data from the database
-        query = User.query.filter(User.username.in_([username]),
+        query = User.query.filter(User.username.in_([username.lower()]),
                                   User.password.in_([password]))
         result = query.first()
 
@@ -103,6 +107,33 @@ def login():
             return redirect(url_for('index'))
         else:
             return render_template('login.html')
+
+@app.route("/add", methods=['POST', 'GET'])
+def add():
+    if logged(session):
+        if request.method == 'GET':
+            return render_template('add.html')
+        else:
+            name, catag = request.form['name'], request.form['catag']
+            if name and catag:
+                query = Item.query.filter(Item.name.in_([name.lower()]))
+                if query.first():
+                    flash("Item: %s already exists." %(name))
+                    return redirect(url_for("add"))
+                else:
+                    db.session.add(Item(name.lower(), catag))
+                    db.session.commit()
+                    flash("%s added in %s successfully." %(name, catag))
+
+                    return redirect(url_for("index"))
+            else:
+                flash("Missing input.")
+                return redirect(url_for("add"))
+    else:
+        flash("We're sorry, this page is only for member." \
+              + "If you have an account please log in")
+
+        return redirect(url_for("index"))
 
 
 @app.route('/logout')

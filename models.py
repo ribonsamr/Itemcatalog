@@ -22,7 +22,7 @@ class Item(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     name = db.Column(db.String, unique=True, nullable=False)
-    catag = db.Column(db.String, unique=True, nullable=False)
+    catag = db.Column(db.String, nullable=False)
 
     def __init__(self, name, catag):
         self.name = name

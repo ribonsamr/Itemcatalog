@@ -11,12 +11,12 @@ app = Flask(__name__)
 
 # Flask config
 app.config.update(
-    SECRET_KEY=os.urandom(16)
+    SECRET_KEY=os.urandom(16),
     HOST='0.0.0.0',
     DEBUG=True,
     ENV="development",
     CSRF_ENABLED=True,
-    SQLALCHEMY_DATABASE_URI='postgresql:///main_db',
+    SQLALCHEMY_DATABASE_URI='postgresql:///itemcatag_db',
     SQLALCHEMY_TRACK_MODIFICATIONS=False
 )
 
@@ -59,7 +59,9 @@ def signup():
             return render_template("signup.html")
         else:
             return redirect(url_for("index"))
+
     else:
+
         if not logged_status:
             user, password = request.form['username'], request.form['password']
 
@@ -99,6 +101,7 @@ def login():
         # if data exists, log the user in.
         if result:
             session['session_login_status'] = True
+
         else:
             flash('Wrong username or password: %s' % (username))
 
@@ -106,17 +109,16 @@ def login():
 
     else:
         # redirect the user to index or login based on his log in status.
-        if logged(session):
-            return redirect(url_for('index'))
-        else:
-            return render_template('login.html')
+        return redirect(url_for('index')) if logged(session) else render_template('login.html')
 
 
 @app.route("/add", methods=['POST', 'GET'])
 def add():
     if logged(session):
+
         if request.method == 'GET':
             return render_template('add.html')
+
         else:
             name, catag = request.form['name'], request.form['catag']
             if name and catag:
@@ -125,6 +127,7 @@ def add():
                 if query.first():
                     flash("Item: %s already exists." % (name))
                     return redirect(url_for("add"))
+
                 else:
                     db.session.add(Item(name, catag))
                     db.session.commit()
@@ -132,9 +135,11 @@ def add():
                     flash("%s added in %s successfully." % (name, catag))
 
                     return redirect(url_for("index"))
+
             else:
                 flash("Missing input.")
                 return redirect(url_for("add"))
+
     else:
         flash("We're sorry, this page is only for member."
               + "If you have an account please log in")
@@ -153,48 +158,78 @@ def view(catag, name):
 def search():
     if request.method == 'GET':
         return render_template('view.html')
+
     else:
+
         if request.form['text']:
             query = Item.query.filter(Item.name.ilike(
                                       f"%{request.form['text']}%"))
             if query.first():
                 return render_template('view.html', query=query)
+
             else:
                 flash("Not found.")
                 return redirect(url_for("search"))
+
         else:
             flash("Empty keyword.")
             return redirect(request.referrer or url_for("index"))
 
+def check_for_existance(query):
+    if not query.first():
+        flash("Query not found.")
+        return redirect(url_for("index"))
+
+    else:
+        None
 
 @app.route('/<catag>/<name>/delete', methods=['POST', 'GET'])
 def delete(catag, name):
-    query = Item.query.filter(Item.name.ilike(name),
-                              Item.catag.ilike(catag))
-    if request.method == 'POST':
-        query.delete(synchronize_session=False)
-        db.session.commit()
+    if logged(session):
+        query = Item.query.filter(Item.name.ilike(name),
+                                  Item.catag.ilike(catag))
 
-        flash("%s deleted successfully." % (f"{catag}/{name}"))
-        return redirect(url_for("index"))
+        if request.method == 'POST':
+            exist_st = check_for_existance(query)
+            if exist_st:
+                return exist_st
+
+            query.delete(synchronize_session=False)
+            db.session.commit()
+
+            flash("%s deleted successfully." % (f"{catag}/{name}"))
+            return redirect(url_for("index"))
+
+        else:
+            return render_template("delete.html", query=query)
+
     else:
-        return render_template("delete.html", query=query)
+        flash("You need to log in first.")
+        return redirect(url_for("index"))
 
 
 @app.route('/<catag>/<name>/edit', methods=['POST', 'GET'])
 def edit(catag, name):
     if logged(session):
         query = Item.query.filter(Item.name.ilike(name),
-                                  Item.catag.ilike(catag)).first()
+                                  Item.catag.ilike(catag))
+
         if request.method == 'GET':
-            return render_template('edit.html', query=query)
+            return render_template('edit.html', query=query.first())
+
         else:
+            exist_st = check_for_existance(query)
+            if exist_st:
+                return exist_st
+
+            query = query.first()
             query.name = request.form['name']
             query.catag = request.form['catag']
             db.session.commit()
-            flash(f"Updated successfully to: {query.name} - {query.catag}")
 
+            flash(f"Updated successfully to: {query.name} - {query.catag}")
             return redirect(url_for("index"))
+
     else:
         flash("You need to log in first.")
         return redirect(url_for("login"))

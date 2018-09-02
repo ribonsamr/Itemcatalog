@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask import url_for
 
 # Init empty SQLAlchemy instance, will init the app later.
 db = SQLAlchemy()

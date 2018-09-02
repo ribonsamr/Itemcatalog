@@ -144,16 +144,23 @@ def add():
 def view(catag, name):
     query = Item.query.filter(Item.name.ilike(name),
                               Item.catag.ilike(catag)).first()
-    return render_template('view.html', item=query)
+    return render_template('view.html', query=query)
 
 @app.route('/search', methods=['POST', 'GET'])
 def search():
-    query = Item.query.filter(Item.name.ilike(f"%{request.form['text']}%"))
-    if query:
-        return render_template('view.html', query=query)
+    if request.method == 'GET':
+        return render_template('view.html')
     else:
-        flash("Not found.")
-        return redirect(url_for("index"))
+        if request.form['text']:
+            query = Item.query.filter(Item.name.ilike(f"%{request.form['text']}%"))
+            if query.first():
+                return render_template('view.html', query=query)
+            else:
+                flash("Not found.")
+                return redirect(url_for("search"))
+        else:
+            flash("Empty keyword.")
+            return redirect(url_for("index"))
 
 @app.route('/logout')
 def logout():

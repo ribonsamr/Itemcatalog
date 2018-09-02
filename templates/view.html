@@ -1,3 +1,26 @@
-{% for item in query %}
-  <li>{{ item.name }} - {{ item.catag }}</li>
-{% endfor %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<form action="/search" method="post">
+  <input type="text" name="text" placeholder="keyword">
+  <button type="submit" name="search">Search</button>
+</form>
+
+{% if query is iterable %}
+  {% for item in query %}
+    <li>{{ item.name }} - {{ item.catag }} -
+      <a href="/{{item.catag}}/{{item.name}}">Link</a>
+    </li>
+  {% endfor %}
+{% else %}
+  <li>{{ query.name }} - {{ query.catag }} -
+    <a href="/{{query.catag}}/{{query.name}}">Link</a>
+  </li>
+{% endif %}

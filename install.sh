@@ -15,13 +15,13 @@ echo -e '\n-- Creating the database --\n'
 
 create_database() {
   if [[ $1 = true ]]; then
-    psql -c 'drop database main_db'
+    psql -c 'drop database itemcatag_db'
   fi
-  psql -c 'create database main_db'
+  psql -c 'create database itemcatag_db'
   forcemigrate=true
 }
 
-if psql -lqt | cut -d \| -f 1 | grep -qw 'main_db'; then
+if psql -lqt | cut -d \| -f 1 | grep -qw 'itemcatag_db'; then
   printf "Database exists. Do you want to re-create it? (y/n): "
   read answer
   if [[ "${answer,,}" = 'y' ]]; then

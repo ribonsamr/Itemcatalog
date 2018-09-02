@@ -68,7 +68,7 @@ def signup():
 
             else:
                 # Check if the username already exists
-                query = User.query.filter(User.username.in_([user.lower()]))
+                query = User.query.filter(User.username.ilike(user))
 
                 if query.first():
                     # Username is already taken.
@@ -76,7 +76,7 @@ def signup():
                     return redirect(url_for('signup'))
 
                 else:
-                    new_user = User(user.lower(), password)
+                    new_user = User(user, password)
                     db.session.add(new_user)
                     db.session.commit()
                     session['session_login_status'] = True
@@ -90,8 +90,8 @@ def login():
         username, password = request.form['username'], request.form['password']
 
         # Get the data from the database
-        query = User.query.filter(User.username.in_([username.lower()]),
-                                  User.password.in_([password]))
+        query = User.query.filter(User.username.ilike(username),
+                                  User.password.ilike(password))
         result = query.first()
 
         # If data exists, log the user in.
@@ -116,12 +116,12 @@ def add():
         else:
             name, catag = request.form['name'], request.form['catag']
             if name and catag:
-                query = Item.query.filter(Item.name.in_([name.lower()]))
+                query = Item.query.filter(Item.name.ilike(name))
                 if query.first():
                     flash("Item: %s already exists." %(name))
                     return redirect(url_for("add"))
                 else:
-                    db.session.add(Item(name.lower(), catag))
+                    db.session.add(Item(name, catag))
                     db.session.commit()
                     flash("%s added in %s successfully." %(name, catag))
 

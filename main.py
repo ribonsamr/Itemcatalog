@@ -128,6 +128,7 @@ def add():
                 else:
                     db.session.add(Item(name, catag))
                     db.session.commit()
+
                     flash("%s added in %s successfully." % (name, catag))
 
                     return redirect(url_for("index"))
@@ -160,7 +161,20 @@ def search():
                 return redirect(url_for("search"))
         else:
             flash("Empty keyword.")
-            return redirect(url_for("index"))
+            return redirect(request.referrer or url_for("index"))
+
+@app.route('/<catag>/<name>/delete', methods=['POST', 'GET'])
+def delete_row(catag, name):
+    query = Item.query.filter(Item.name.ilike(name),
+                              Item.catag.ilike(catag))
+    if request.method == 'POST':
+        query.delete(synchronize_session=False)
+        db.session.commit()
+
+        flash("%s deleted successfully." % (f"{catag}/{name}"))
+        return redirect(url_for("index"))
+    else:
+        return render_template("delete.html", query=query)
 
 @app.route('/logout')
 def logout():

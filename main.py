@@ -120,7 +120,8 @@ def add():
         else:
             name, catag = request.form['name'], request.form['catag']
             if name and catag:
-                query = Item.query.filter(Item.name.ilike(name))
+                query = Item.query.filter(Item.name.ilike(name),
+                                          Item.catag.ilike(catag))
                 if query.first():
                     flash("Item: %s already exists." % (name))
                     return redirect(url_for("add"))
@@ -139,6 +140,20 @@ def add():
 
         return redirect(url_for("index"))
 
+@app.route('/<catag>/<name>')
+def view(catag, name):
+    query = Item.query.filter(Item.name.ilike(name),
+                              Item.catag.ilike(catag)).first()
+    return render_template('view.html', item=query)
+
+@app.route('/search', methods=['POST', 'GET'])
+def search():
+    query = Item.query.filter(Item.name.ilike(f"%{request.form['text']}%"))
+    if query:
+        return render_template('view.html', query=query)
+    else:
+        flash("Not found.")
+        return redirect(url_for("index"))
 
 @app.route('/logout')
 def logout():

@@ -11,6 +11,8 @@ from models import db
 # Import the User model.
 from models import User, Item
 
+from flask_wtf.csrf import CSRFProtect
+
 """
 Setup
 """
@@ -23,7 +25,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Load the app into the SQLAlchemy db
 db.init_app(app)
-
+csrf = CSRFProtect(app)
 """
 Routes
 """

@@ -10,6 +10,7 @@
 {% endwith %}
 
 <form action="/signup" method="POST">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
   <input type="username" name="username" placeholder="Username">
   <input type="password" name="password" placeholder="Password">
   <input type="submit" value="Sign up">

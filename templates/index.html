@@ -40,6 +40,7 @@
 {% endif %}
 
 <form action="/search" method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
   <input type="text" name="text" placeholder="keyword">
   <button type="submit" name="search">Search</button>
 </form>

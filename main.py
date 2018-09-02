@@ -9,6 +9,7 @@ from flask_wtf.csrf import CSRFProtect
 # Init a Flask application
 app = Flask(__name__)
 
+# Flask config
 app.config.update(
     SECRET_KEY=os.urandom(16)
     HOST='0.0.0.0',
@@ -19,11 +20,12 @@ app.config.update(
     SQLALCHEMY_TRACK_MODIFICATIONS=False
 )
 
-# Load the app into SQLAlchemy Db and CSRFProtect.
+# Load SQLAlchemy Db and CSRFProtect.
 db.init_app(app)
 csrf = CSRFProtect(app)
 
 
+# Check if the user is logged in or not.
 def logged(session):
     return bool(session.get("session_login_status"))
 

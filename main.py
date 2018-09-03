@@ -75,6 +75,9 @@ def image_get(path):
 
     return redirect(photo)
 
+@app.route("/gconnect")
+def gconnect():
+    return "hello"
 
 @app.route("/")
 @app.route("/home")
@@ -101,21 +104,33 @@ def signup():
         else:
             user, password = request.form['username'], request.form['password']
 
-            if not user or not password:
+            # TODO: validate email
+            email = request.form['email']
+
+            if not user or not password or not email:
                 flash('Missing fields.')
                 return redirect(url_for("signup"))
 
             else:
-                # check if the username already exists
-                query = User.query.filter(User.username.ilike(user))
+                # check if the username & email already exist
+                q_email = User.query.filter(User.email.ilike(email)).first()
+                q_username = User.query.filter(User.username.ilike(user)).first()
 
-                if query.first():
-                    flash("Username is taken.")
+                if q_email or q_username:
+                    existance = []
+
+                    if q_email:
+                        existance.append(email)
+                    if q_username:
+                        existance.append(user)
+                    existance = ', '.join(i for i in existance)
+
+                    flash(f"{existance} already exist.")
                     return redirect(url_for('signup'))
 
                 else:
                     # register this new user
-                    new_user = User(user, password)
+                    new_user = User(user, password, email)
                     db.session.add(new_user)
                     db.session.commit()
 

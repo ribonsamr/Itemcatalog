@@ -12,11 +12,13 @@ class User(UserMixin, db.Model):
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     username = db.Column(db.String, unique=True, nullable=False)
-    password = db.Column(db.String(), nullable=False)
+    password = db.Column(db.String, nullable=False)
+    email = db.Column(db.String, unique=True)
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, email):
         self.username = username
         self.password = generate_password_hash(password)
+        self.email = email
 
     def __repr__(self):
         return '<User %r>' % self.username
@@ -26,7 +28,8 @@ class User(UserMixin, db.Model):
         return {
             'id': self.id,
             'username': self.username,
-            'password': self.password
+            'password': self.password,
+            'email': self.email
         }
 
 

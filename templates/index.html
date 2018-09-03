@@ -4,7 +4,7 @@
     {% if data %}
       <ul class=data>
         {% for dt in data %}
-        <li>{{ dt.username }} – {{ dt.password }}</li>
+        <li>{{ dt.username }} – {{ dt.password }} - {{ dt.email }}</li>
         {% endfor %}
       </ul>
     {% endif %}
@@ -13,7 +13,7 @@
     {% if items %}
     <ul class=items>
       {% for item in items %}
-      <li>{{ item.id }} - {{ item.name }} - {{ item.catag }} -
+      <li>{{ item.id }} - {{ item.name }} - {{ item.catag }}
         <a href="{{ url_for('view', catag=item.catag, name=item.name) }}">Link</a> -
         <a href="{{ url_for('image_get', path=item.img_filename) }}">Image</a> -
         <a href="{{ url_for('edit', catag=item.catag, name=item.name) }}">Edit</a> -

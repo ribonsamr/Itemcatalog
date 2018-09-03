@@ -7,6 +7,8 @@ from models import User, Item
 from flask_wtf.csrf import CSRFProtect
 from flask_login import current_user, login_user, logout_user, LoginManager, \
                         login_required
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 # Init a Flask application
 app = Flask(__name__)
@@ -32,13 +34,10 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
+
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
-
-# Check if the user is logged in or not.
-def logged(session):
-    return bool(session.get("session_login_status"))
 
 
 @app.route("/")
@@ -53,8 +52,8 @@ def index():
     # load the items to show them.
     items = Item.query.all()
 
-    return render_template('index.html', logged=logged(session), data=users,
-                               items=items)
+    return render_template('index.html', data=users,
+                           items=items)
 
 
 @app.route("/signup", methods=['POST', 'GET'])
@@ -96,20 +95,22 @@ def signup():
 def login():
     if request.method == 'POST':
         if not current_user.is_authenticated:
-            username, password = request.form['username'], request.form['password']
+            username = request.form['username']
+            password = request.form['password']
 
             # get the data from the database
-            query = User.query.filter(User.username.ilike(username),
-                                      User.password.ilike(password))
+            query = User.query.filter(User.username.ilike(username))
             user = query.first()
 
             # if data exists, log the user in.
-            if user:
+            if user and check_password_hash(user.password, password):
                 login_user(user, remember=True)
                 return redirect(url_for("index"))
+
             else:
                 flash('Wrong username or password: %s' % (username))
                 return redirect(url_for('login'))
+
         else:
             flash("You are already logged in.")
             return redirect(url_for('index'))
@@ -256,10 +257,12 @@ def api_item_view(name):
     query = Item.query.filter(Item.name.ilike(name)).all()
     return jsonify([i.serialize for i in query])
 
+
 @app.route("/api/item/<int:id>")
 def api_item_by_id(id):
     query = Item.query.get(id)
     return jsonify(query.serialize)
+
 
 @app.route("/api/items")
 def api_view_items_all():

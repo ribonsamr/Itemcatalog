@@ -1,53 +1,32 @@
-{% block body %}
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
+{% extends "base.html" %}
+{% block content %}
+    <p>Users:</p>
+    {% if data %}
+      <ul class=data>
+        {% for dt in data %}
+        <li>{{ dt.username }} – {{ dt.password }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
 
-{% if logged %}
-  <ul>
-    <li><a href="add">add items</a></li>
-    <li><a href="/api/users">api: view users</a></li>
-    <li><a href="/api/items">api: view items</a></li>
-    <li><a href="logout">logout</a></li>
-  </ul>
-
-{% else %}
-  <a href="signup">sign up</a>
-  <a href="login">login</a>
-{% endif %}
-
-<p>Users:</p>
-{% if data %}
-  <ul class=data>
-  {% for dt in data %}
-    <li>{{ dt.username }} – {{ dt.password }}</li>
-  {% endfor %}
-  </ul>
-{% endif %}
-
-<p>Items:</p>
-{% if items %}
+    <p>Items:</p>
+    {% if items %}
     <ul class=items>
-    {% for item in items %}
+      {% for item in items %}
       <li>{{ item.id }} - {{ item.name }} - {{ item.catag }} -
         <a href="{{ url_for('view', catag=item.catag, name=item.name) }}">Link</a> -
         <a href="{{ url_for('edit', catag=item.catag, name=item.name) }}">Edit</a> -
-        <a href="{{ url_for('delete', catag=item.catag, name=item.name) }}">Delete</a>
+        <a href="{{ url_for('delete', catag=item.catag, name=item.name) }}">Delete</a> -
+        <a href="{{ url_for('api_item_by_id', id=item.id) }}">API</a>
       </li>
-    {% endfor %}
+      {% endfor %}
     </ul>
-{% endif %}
+    {% endif %}
 
-<form action="/search" method="post">
-  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-  <input type="text" name="text" placeholder="keyword">
-  <button type="submit" name="search">Search</button>
-</form>
+    <form action="/search" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      <input type="text" name="text" placeholder="keyword">
+      <button type="submit" name="search">Search</button>
+    </form>
 
-{% endblock %}
+  {% endblock %}

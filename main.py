@@ -43,11 +43,7 @@ def index():
     # load the items to show them.
     items = Item.query.all()
 
-    if not logged(session):
-        return render_template('index.html', logged=False, data=users,
-                               items=items)
-    else:
-        return render_template('index.html', logged=True, data=users,
+    return render_template('index.html', logged=logged(session), data=users,
                                items=items)
 
 
@@ -247,10 +243,34 @@ def not_found(error):
     return render_template('error.html'), 404
 
 
-@app.route("/api/catag/<int:id>")
-def api_catag(id):
-    query = Item.query.get(id)
-    return jsonify(name=query.name, catag=query.catag, id=query.id)
+@app.route("/api/catagory/<name>")
+def api_catag_view(name):
+    if logged(session):
+        query = Item.query.filter(Item.catag.ilike(name)).all()
+        return jsonify([i.serialize for i in query])
+    else:
+        flash("You need to log in first.")
+        return redirect(url_for("index"))
+
+
+@app.route("/api/item/<name>")
+def api_item_view(name):
+    if logged(session):
+        query = Item.query.filter(Item.name.ilike(name)).all()
+        return jsonify([i.serialize for i in query])
+    else:
+        flash("You need to log in first.")
+        return redirect(url_for("index"))
+
+
+@app.route("/api/item/<int:id>")
+def api_item_by_id(id):
+    if logged(session):
+        query = Item.query.get(id)
+        return jsonify(query.serialize)
+    else:
+        flash("You need to log in first.")
+        return redirect(url_for("index"))
 
 
 @app.route("/api/items")
@@ -261,6 +281,7 @@ def api_view_items_all():
     else:
         flash("You need to log in first.")
         return redirect(url_for("index"))
+
 
 @app.route("/api/users")
 def api_view_users_all():

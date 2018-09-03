@@ -1,3 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
 <form action="edit" method="post">
   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
   <input type="text" name="name" value="{{ query.name }}">
@@ -5,3 +7,4 @@
   <button type="button" onclick="javascript:history.back()" name="button">Cancel</button>
   <button type="submit" name="button">Edit</button>
 </form>
+{% endblock %}

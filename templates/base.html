@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <style>
+      a {
+        color: grey;
+        text-decoration: none;
+      }
+      a:hover {
+        color: #00E8D1;
+      }
+      a:visited {
+        color: grey;
+      }
+      a:visited:hover {
+        color: #00E8D1;
+      }
+    </style>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    {% if logged %}
+      <li><a href="{{ url_for('index') }}">Home</a></li>
+      <li><a href="{{ url_for('add') }}">Add items</a></li>
+      <li><a href="{{ url_for('api_view_users_all') }}">API: view users</a></li>
+      <li><a href="{{ url_for('api_view_items_all') }}">API: view items</a></li>
+      <li><a href="{{ url_for('logout') }}">Logout</a></li>
+    {% else %}
+      <li><a href="{{ url_for('index') }}">Home</a></li>
+      <li><a href="{{ url_for('signup') }}">Sign up</a></li>
+      <li><a href="{{ url_for('login') }}">Login</a></li>
+    {% endif %}
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </body>
+</html>

@@ -12,16 +12,19 @@ class User(UserMixin, db.Model):
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     username = db.Column(db.String, unique=True, nullable=False)
-    password = db.Column(db.String, nullable=False)
+    password = db.Column(db.String)
     email = db.Column(db.String, unique=True)
+    google = db.Column(db.Boolean)
 
-    def __init__(self, username, password, email):
+    def __init__(self, username, password, email, google):
         self.username = username
         self.password = generate_password_hash(password)
         self.email = email
+        self.google = google
 
     def __repr__(self):
         return '<User %r>' % self.username
+
 
     @property
     def serialize(self):

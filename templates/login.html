@@ -13,13 +13,18 @@
   <input type="password" name="password" placeholder="Password">
   <input type="submit" value="Log in">
 </form>
-
-<div class="result">
-
-</div>
-
 <div class="g-signin2" data-onsuccess="onSignIn"></div>
 
+<a href="#" onclick="signOut();">Sign out</a>
+<script>
+  function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+      backendSignOut();
+    });
+  }
+</script>
 
   <script>
   var csrf_token = "{{ csrf_token() }}";
@@ -32,6 +37,18 @@
     }
   });
 
+  function backendSignOut() {
+    $.ajax({
+      type: 'POST',
+      url: '/logout',
+      processData: false,
+      data: true,
+      contentType: 'application/octet-stream; charset=utf-8',
+      success: function(result) {
+        window.location.replace(result)
+      }
+    });
+  }
   function onSignIn(googleUser) {
     var id_token = googleUser.getAuthResponse().id_token;
 
@@ -44,8 +61,10 @@
       data: id_token,
       contentType: 'application/octet-stream; charset=utf-8',
       // success: function(result) {
-      //   console.log(result);
-      //   $(".result").html(JSON.stringify(result));
+      //   // console.log(result);
+      //   // $(".result").html(JSON.stringify(result));
+      //   // console.log(result);
+      //   // window.location.replace(result)
       // }
     });
     }

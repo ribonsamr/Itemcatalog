@@ -65,7 +65,7 @@ def upload(request):
 
     if file:
         filename = photos.save(file)
-        return filename, redirect(url_for('image_get', path=filename))
+        return (filename, redirect(url_for('image_get', path=filename)))
 
 
 @app.route('/iview/<path>')
@@ -80,27 +80,44 @@ def image_get(path):
 @app.route("/gconnect", methods=['POST', 'GET'])
 def gconnect():
     if request.method == 'POST':
-        token = request.data
-        try:
-            # Specify the CLIENT_ID of the app that accesses the backend:
-            idinfo = id_token.verify_oauth2_token(token, rqs.Request(),
-            '957567508066-ju7cas7bvc93aqbpmr717gcpljojj070.apps.googleusercontent.com')
+        if not current_user.is_authenticated:
+            token = request.data
+            try:
+                # Specify the CLIENT_ID of the app that accesses the backend:
+                idinfo = id_token.verify_oauth2_token(token, rqs.Request(),
+                '957567508066-ju7cas7bvc93aqbpmr717gcpljojj070.apps.googleusercontent.com')
 
-            if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
-                raise ValueError('Wrong issuer.')
+                if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+                    raise ValueError('Wrong issuer.')
 
-            # ID token is valid. Get the user's Google Account ID from the decoded token.
-            email = idinfo['email']
-            if email:
-                return redirect(url_for("login", ))
+                # ID token is valid. Get the user's Google Account ID from the decoded token.
+                email = idinfo['email']
+                if email:
+                    query = User.query.filter(User.email.ilike(email)).first()
+                    if query and query.google:
+                        login_user(query, remember=True)
+                        current_user.google_signed = True
+                        return url_for("index")
 
-        except ValueError:
-            return "Invalid token"
-        pass
+                    else:
+                        new_user = User(email, '', email, True)
 
-        return jsonify(idinfo)
+                        db.session.add(new_user)
+                        db.session.commit()
+
+                        login_user(new_user, remember=True)
+                        current_user.google_signed = True
+
+                        return url_for("index")
+
+            except ValueError:
+                return "Invalid token"
+        else:
+            return render_template("login.html")
+
+                # return jsonify(idinfo)
     else:
-        return "--GET"
+        return redirect(url_for("login"))
 
 
 @app.route("/")
@@ -177,6 +194,10 @@ def login():
             query = User.query.filter(User.username.ilike(username))
             user = query.first()
 
+            if user.google:
+                flash("Please login with Google.")
+                return redirect(url_for("gconnect"))
+
             # if data exists, log the user in.
             if user and check_password_hash(user.password, password):
                 login_user(user, remember=True)
@@ -192,11 +213,11 @@ def login():
 
     else:
         # redirect the user to index or login based on his log in status.
-        if current_user.is_authenticated:
-            flash("You are already logged in.")
-            return redirect(url_for('index'))
-        else:
-            return render_template('login.html')
+        # if current_user.is_authenticated:
+        #     flash("You are already logged in.")
+        #     return redirect(url_for('index'))
+        # else:
+        return render_template('login.html')
 
 
 @app.route("/add", methods=['POST', 'GET'])
@@ -220,16 +241,17 @@ def add():
                 if not results:
                     # No image file:
                     db.session.add(Item(name, catag, ''))
+                    db.session.commit()
+                    flash("%s added in %s successfully." % (name, catag))
+                    return redirect(url_for("index"))
 
                 else:
+                    # Image exists
                     filename, redirection = results
                     db.session.add(Item(name, catag, filename))
-
-                db.session.commit()
-
-                flash("%s added in %s successfully." % (name, catag))
-
-                return redirection or redirect(url_for("index"))
+                    db.session.commit()
+                    flash("%s added in %s successfully." % (name, catag))
+                    return redirection
 
         else:
             flash("Missing input.")
@@ -324,10 +346,14 @@ def edit(catag, name):
         return redirect(url_for("index"))
 
 
-@app.route('/logout')
+@app.route('/logout', methods=['POST', 'GET'])
 @login_required
 def logout():
-    logout_user()
+    if request.method == 'POST':
+        logout_user()
+        return url_for("index")
+    if current_user.google:
+        return redirect(url_for('login'))
     return redirect(url_for('index'))
 
 

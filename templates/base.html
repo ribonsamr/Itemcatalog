@@ -33,11 +33,12 @@
         <li><a href="{{ url_for('add') }}">Add items</a></li>
         <li><a href="{{ url_for('api_view_users_all') }}">API: view users</a></li>
         <li><a href="{{ url_for('api_view_items_all') }}">API: view items</a></li>
-        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        <li><a href="{{ url_for('logout') }}">Logout ({{ current_user.email }})</a></li>
       {% else %}
         <li><a href="{{ url_for('index') }}">Home</a></li>
         <li><a href="{{ url_for('signup') }}">Sign up</a></li>
         <li><a href="{{ url_for('login') }}">Login</a></li>
+        <li><a href="{{ url_for('gconnect') }}">Google Login</a></li>
       {% endif %}
       <form action="/search" method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>

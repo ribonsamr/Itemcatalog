@@ -14,6 +14,7 @@ app.config.update(
     SECRET_KEY=os.urandom(16),
     HOST='0.0.0.0',
     DEBUG=True,
+    JSONIFY_PRETTYPRINT_REGULAR=True,
     ENV="development",
     CSRF_ENABLED=True,
     SQLALCHEMY_DATABASE_URI='postgresql:///itemcatag_db',

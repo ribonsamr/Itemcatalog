@@ -36,10 +36,12 @@ class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     name = db.Column(db.String, nullable=False)
     catag = db.Column(db.String, nullable=False)
+    imgpath = db.Column(db.String())
 
-    def __init__(self, name, catag):
+    def __init__(self, name, catag, imgpath):
         self.name = name
         self.catag = catag
+        self.imgpath = imgpath
 
     def __repr__(self):
         return '<Name %r>' % self.name
@@ -49,5 +51,6 @@ class Item(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'catagory': self.catag
+            'catagory': self.catag,
+            'image path': self.imgpath
         }

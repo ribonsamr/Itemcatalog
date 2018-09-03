@@ -1,14 +1,19 @@
 import os
 from flask import Flask, flash, redirect, render_template, \
-                  request, session, url_for, jsonify
+                  request, session, url_for, jsonify, send_from_directory, \
+                  safe_join
 from flask_sqlalchemy import SQLAlchemy
-from models import db
-from models import User, Item
+from models import db, User, Item
 from flask_wtf.csrf import CSRFProtect
 from flask_login import current_user, login_user, logout_user, LoginManager, \
                         login_required
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
+from flask_uploads import *
 
+upload_folder = 'uploads'
+
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 # Init a Flask application
 app = Flask(__name__)
@@ -22,7 +27,8 @@ app.config.update(
     ENV="development",
     CSRF_ENABLED=True,
     SQLALCHEMY_DATABASE_URI='postgresql:///itemcatag_db',
-    SQLALCHEMY_TRACK_MODIFICATIONS=False
+    SQLALCHEMY_TRACK_MODIFICATIONS=False,
+    UPLOADED_PHOTOS_DEST=upload_folder
 )
 
 # Load SQLAlchemy Db and CSRFProtect.
@@ -34,10 +40,42 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
+photos = UploadSet('photos', IMAGES)
+configure_uploads(app, (photos))
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+
+def upload(request):
+    if 'file' not in request.files:
+        flash('No files attached.')
+        return False
+
+    file = request.files['file']
+
+    if file.filename == '':
+        flash('No selected file')
+        return False
+
+    if file and allowed_file(file.filename):
+        filename = photos.save(file)
+        return filename, redirect(url_for('image_get', path=filename))
+
+
+@app.route('/iview/<path>')
+def image_get(path):
+    photo = photos.url(path)
+    if photo is None:
+        abort(404)
+
+    return redirect(photo)
 
 
 @app.route("/")
@@ -132,6 +170,7 @@ def add():
 
     else:
         name, catag = request.form['name'], request.form['catag']
+
         if name and catag:
             query = Item.query.filter(Item.name.ilike(name),
                                       Item.catag.ilike(catag))
@@ -140,12 +179,20 @@ def add():
                 return redirect(url_for("add"))
 
             else:
-                db.session.add(Item(name, catag))
+                results = upload(request)
+                if not results:
+                    # No image file:
+                    db.session.add(Item(name, catag, ''))
+
+                else:
+                    filename, redirection = results
+                    db.session.add(Item(name, catag, filename))
+
                 db.session.commit()
 
                 flash("%s added in %s successfully." % (name, catag))
 
-                return redirect(url_for("index"))
+                return redirection or redirect(url_for("index"))
 
         else:
             flash("Missing input.")
@@ -201,6 +248,12 @@ def delete(catag, name):
         if exist_st:
             return exist_st
 
+        # remove the picture first
+        file_path = photos.path(query.first().imgpath)
+        os.remove(file_path)
+
+        # then delete the item from the database, which delets the path of
+        # the picture too.
         query.delete(synchronize_session=False)
         db.session.commit()
 

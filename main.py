@@ -1,6 +1,6 @@
 import os
 from flask import Flask, flash, redirect, render_template, \
-                  request, session, url_for
+                  request, session, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from models import db
 from models import User, Item
@@ -244,6 +244,31 @@ def logout():
 @app.errorhandler(404)
 def not_found(error):
     return render_template('error.html'), 404
+
+
+@app.route("/api/catag/<int:id>")
+def api_catag(id):
+    query = Item.query.get(id)
+    return jsonify(name=query.name, catag=query.catag, id=query.id)
+
+
+@app.route("/api/items")
+def api_view_items_all():
+    if logged(session):
+        query = Item.query.all()
+        return jsonify(Items=[i.serialize for i in query])
+    else:
+        flash("You need to log in first.")
+        return redirect(url_for("index"))
+
+@app.route("/api/users")
+def api_view_users_all():
+    if logged(session):
+        query = User.query.all()
+        return jsonify(Users=[i.serialize for i in query])
+    else:
+        flash("You need to log in first.")
+        return redirect(url_for("index"))
 
 
 if __name__ == '__main__':

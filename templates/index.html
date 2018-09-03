@@ -10,8 +10,13 @@
 {% endwith %}
 
 {% if logged %}
-  <a href="add">add items</a>
-  <a href="logout">logout</a>
+  <ul>
+    <li><a href="add">add items</a></li>
+    <li><a href="/api/users">api: view users</a></li>
+    <li><a href="/api/items">api: view items</a></li>
+    <li><a href="logout">logout</a></li>
+  </ul>
+
 {% else %}
   <a href="signup">sign up</a>
   <a href="login">login</a>
@@ -30,7 +35,7 @@
 {% if items %}
     <ul class=items>
     {% for item in items %}
-      <li>{{ item.name }} - {{ item.catag }} -
+      <li>{{ item.id }} - {{ item.name }} - {{ item.catag }} -
         <a href="{{ url_for('view', catag=item.catag, name=item.name) }}">Link</a> -
         <a href="{{ url_for('edit', catag=item.catag, name=item.name) }}">Edit</a> -
         <a href="{{ url_for('delete', catag=item.catag, name=item.name) }}">Delete</a>

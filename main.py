@@ -11,12 +11,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from flask_uploads import *
 
-upload_folder = 'uploads'
 
 # Init a Flask application
 app = Flask(__name__)
 
 # Flask config
+upload_folder = 'uploads'
 app.config.update(
     SECRET_KEY=os.urandom(16),
     HOST='0.0.0.0',
@@ -29,15 +29,19 @@ app.config.update(
     UPLOADED_PHOTOS_DEST=upload_folder
 )
 
-# Load SQLAlchemy Db and CSRFProtect.
+# Load SQLAlchemy Db
 db.init_app(app)
+
+# CSRFProtect setup
 csrf = CSRFProtect(app)
 
 # flask-login setup
 login_manager = LoginManager()
 login_manager.init_app(app)
+# set the login view function to 'login'
 login_manager.login_view = "login"
 
+# flask-uploads config
 photos = UploadSet('photos', IMAGES)
 configure_uploads(app, (photos))
 

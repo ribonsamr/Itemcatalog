@@ -8,7 +8,7 @@ forcemigrate=false
 
 # install python required packages
 echo -e '-- Installing required packages --\n'
-pip3 install flask-migrate flask-script flask-sqlalchemy flask-wtf psycopg2-binary flask-login flask-uploads
+pip3 install flask-migrate flask-script flask-sqlalchemy flask-wtf psycopg2-binary flask-login flask-uploads google-auth
 
 # create postgresql database
 echo -e '\n-- Creating the database --\n'

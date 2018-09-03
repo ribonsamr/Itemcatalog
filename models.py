@@ -32,7 +32,8 @@ class User(UserMixin, db.Model):
             'id': self.id,
             'username': self.username,
             'password': self.password,
-            'email': self.email
+            'email': self.email,
+            'google account': self.google
         }
 
 

@@ -308,8 +308,9 @@ def delete(catag, name):
             return exist_st
 
         # remove the picture first
-        file_path = photos.path(query.first().img_filename)
-        os.remove(file_path)
+        if query.first().img_filename:
+            file_path = photos.path(query.first().img_filename)
+            os.remove(file_path)
 
         # then delete the item from the database, which delets the path of
         # the picture too.

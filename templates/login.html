@@ -15,7 +15,8 @@
 </form>
 <div class="g-signin2" data-onsuccess="onSignIn"></div>
 
-<a href="#" onclick="signOut();">Sign out</a>
+<a class='signout' style="display: none" href="#" onclick="signOut();">Sign out</a>
+
 <script>
   function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();
@@ -60,12 +61,13 @@
       processData: false,
       data: id_token,
       contentType: 'application/octet-stream; charset=utf-8',
-      // success: function(result) {
-      //   // console.log(result);
-      //   // $(".result").html(JSON.stringify(result));
-      //   // console.log(result);
-      //   // window.location.replace(result)
-      // }
+      success: function(result) {
+        $('.signout').attr('style', 'display: relative');
+        // console.log(result);
+        // $(".result").html(JSON.stringify(result));
+        // console.log(result);
+        // window.location.replace(result)
+      }
     });
     }
     </script>

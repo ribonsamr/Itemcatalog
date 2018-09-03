@@ -12,7 +12,8 @@
   <input type="password" name="password" placeholder="Password">
   <input type="submit" value="Log in">
 </form>
-<div id="my-signin2"></div>
+<div id="g-signin2"</div>
+
   <script>
     function onSuccess(googleUser) {
       console.log('Logged in as: ' + googleUser.getBasicProfile().getEmail());
@@ -21,7 +22,7 @@
       console.log(error);
     }
     function renderButton() {
-      gapi.signin2.render('my-signin2', {
+      gapi.signin2.render('g-signin2', {
         'scope': 'profile email',
         'width': 240,
         'height': 50,

@@ -10,7 +10,8 @@ from flask_login import current_user, login_user, logout_user, LoginManager, \
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from flask_uploads import *
-
+from google.oauth2 import id_token
+from google.auth.transport import requests as rqs
 
 # Init a Flask application
 app = Flask(__name__)
@@ -75,10 +76,32 @@ def image_get(path):
 
     return redirect(photo)
 
+
 @app.route("/gconnect", methods=['POST', 'GET'])
 def gconnect():
-    print(request.data)
-    return "done"
+    if request.method == 'POST':
+        token = request.data
+        try:
+            # Specify the CLIENT_ID of the app that accesses the backend:
+            idinfo = id_token.verify_oauth2_token(token, rqs.Request(),
+            '957567508066-ju7cas7bvc93aqbpmr717gcpljojj070.apps.googleusercontent.com')
+
+            if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+                raise ValueError('Wrong issuer.')
+
+            # ID token is valid. Get the user's Google Account ID from the decoded token.
+            email = idinfo['email']
+            if email:
+                return redirect(url_for("login", ))
+
+        except ValueError:
+            return "Invalid token"
+        pass
+
+        return jsonify(idinfo)
+    else:
+        return "--GET"
+
 
 @app.route("/")
 @app.route("/home")

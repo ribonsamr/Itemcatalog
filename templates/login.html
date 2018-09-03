@@ -3,6 +3,7 @@
 <script src="https://apis.google.com/js/platform.js" async defer></script>
 <meta name="google-signin-client_id" content="957567508066-ju7cas7bvc93aqbpmr717gcpljojj070.apps.googleusercontent.com">
 <meta name="google-signin-scope" content="profile email">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </script>
 {% endblock %}
 {% block content %}
@@ -12,28 +13,23 @@
   <input type="password" name="password" placeholder="Password">
   <input type="submit" value="Log in">
 </form>
-<div id="g-signin2"</div>
+<div class="g-signin2" data-onsuccess="onSignIn"></div>
 
   <script>
-    function onSuccess(googleUser) {
-      console.log('Logged in as: ' + googleUser.getBasicProfile().getEmail());
-    }
-    function onFailure(error) {
-      console.log(error);
-    }
-    function renderButton() {
-      gapi.signin2.render('g-signin2', {
-        'scope': 'profile email',
-        'width': 240,
-        'height': 50,
-        'longtitle': true,
-        'theme': 'dark',
-        'onsuccess': onSuccess,
-        'onfailure': onFailure
-      });
+  function onSignIn(googleUser) {
+    var csrf_token = "{{ csrf_token() }}";
+
+    var id_token = googleUser.getAuthResponse().id_token;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/gconnect');
+    xhr.setRequestHeader("X-CSRFToken", csrf_token);
+    xhr.onload = function() {
+      console.log('Signed in as: ' + xhr.responseText);
+    };
+    xhr.send('idtoken=' + id_token);
     }
   </script>
 
-  <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
 
 {% endblock %}

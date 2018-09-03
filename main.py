@@ -75,9 +75,10 @@ def image_get(path):
 
     return redirect(photo)
 
-@app.route("/gconnect")
+@app.route("/gconnect", methods=['POST', 'GET'])
 def gconnect():
-    return "hello"
+    print(request.data)
+    return "done"
 
 @app.route("/")
 @app.route("/home")

@@ -5,6 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 from models import db
 from models import User, Item
 from flask_wtf.csrf import CSRFProtect
+from flask_login import current_user, login_user, logout_user, LoginManager, \
+                        login_required
 
 # Init a Flask application
 app = Flask(__name__)
@@ -25,6 +27,14 @@ app.config.update(
 db.init_app(app)
 csrf = CSRFProtect(app)
 
+# flask-login setup
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 # Check if the user is logged in or not.
 def logged(session):
@@ -49,17 +59,11 @@ def index():
 
 @app.route("/signup", methods=['POST', 'GET'])
 def signup():
-    logged_status = logged(session)
+    if not current_user.is_authenticated:
+        if request.method == 'GET':
+                return render_template("signup.html")
 
-    if request.method == 'GET':
-        if not logged_status:
-            return render_template("signup.html")
         else:
-            return redirect(url_for("index"))
-
-    else:
-
-        if not logged_status:
             user, password = request.form['username'], request.form['password']
 
             if not user or not password:
@@ -80,68 +84,71 @@ def signup():
                     db.session.add(new_user)
                     db.session.commit()
 
-                    session['session_login_status'] = True
+                    login_user(new_user, remember=True)
 
                     return redirect(url_for("index"))
+    else:
+        flash("You are already logged in.")
+        return redirect(url_for("index"))
 
 
 @app.route("/login", methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
-        username, password = request.form['username'], request.form['password']
+        if not current_user.is_authenticated:
+            username, password = request.form['username'], request.form['password']
 
-        # get the data from the database
-        query = User.query.filter(User.username.ilike(username),
-                                  User.password.ilike(password))
-        result = query.first()
+            # get the data from the database
+            query = User.query.filter(User.username.ilike(username),
+                                      User.password.ilike(password))
+            user = query.first()
 
-        # if data exists, log the user in.
-        if result:
-            session['session_login_status'] = True
-
+            # if data exists, log the user in.
+            if user:
+                login_user(user, remember=True)
+                return redirect(url_for("index"))
+            else:
+                flash('Wrong username or password: %s' % (username))
+                return redirect(url_for('login'))
         else:
-            flash('Wrong username or password: %s' % (username))
-
-        return redirect(url_for('login'))
+            flash("You are already logged in.")
+            return redirect(url_for('index'))
 
     else:
         # redirect the user to index or login based on his log in status.
-        return redirect(url_for('index')) if logged(session) else render_template('login.html')
+        if current_user.is_authenticated:
+            flash("You are already logged in.")
+            return redirect(url_for('index'))
+        else:
+            return render_template('login.html')
 
 
 @app.route("/add", methods=['POST', 'GET'])
+@login_required
 def add():
-    if logged(session):
-
-        if request.method == 'GET':
-            return render_template('add.html')
-
-        else:
-            name, catag = request.form['name'], request.form['catag']
-            if name and catag:
-                query = Item.query.filter(Item.name.ilike(name),
-                                          Item.catag.ilike(catag))
-                if query.first():
-                    flash("Item: %s already exists." % (name))
-                    return redirect(url_for("add"))
-
-                else:
-                    db.session.add(Item(name, catag))
-                    db.session.commit()
-
-                    flash("%s added in %s successfully." % (name, catag))
-
-                    return redirect(url_for("index"))
-
-            else:
-                flash("Missing input.")
-                return redirect(url_for("add"))
+    if request.method == 'GET':
+        return render_template('add.html')
 
     else:
-        flash("We're sorry, this page is only for member."
-              + "If you have an account please log in")
+        name, catag = request.form['name'], request.form['catag']
+        if name and catag:
+            query = Item.query.filter(Item.name.ilike(name),
+                                      Item.catag.ilike(catag))
+            if query.first():
+                flash("Item: %s already exists." % (name))
+                return redirect(url_for("add"))
 
-        return redirect(url_for("index"))
+            else:
+                db.session.add(Item(name, catag))
+                db.session.commit()
+
+                flash("%s added in %s successfully." % (name, catag))
+
+                return redirect(url_for("index"))
+
+        else:
+            flash("Missing input.")
+            return redirect(url_for("add"))
 
 
 @app.route('/<catag>/<name>')
@@ -172,6 +179,7 @@ def search():
             flash("Empty keyword.")
             return redirect(request.referrer or url_for("index"))
 
+
 def check_for_existance(query):
     if not query.first():
         flash("Query not found.")
@@ -180,61 +188,55 @@ def check_for_existance(query):
     else:
         None
 
+
 @app.route('/<catag>/<name>/delete', methods=['POST', 'GET'])
+@login_required
 def delete(catag, name):
-    if logged(session):
-        query = Item.query.filter(Item.name.ilike(name),
-                                  Item.catag.ilike(catag))
+    query = Item.query.filter(Item.name.ilike(name),
+                              Item.catag.ilike(catag))
 
-        if request.method == 'POST':
-            exist_st = check_for_existance(query)
-            if exist_st:
-                return exist_st
+    if request.method == 'POST':
+        exist_st = check_for_existance(query)
+        if exist_st:
+            return exist_st
 
-            query.delete(synchronize_session=False)
-            db.session.commit()
+        query.delete(synchronize_session=False)
+        db.session.commit()
 
-            flash("%s deleted successfully." % (f"{catag}/{name}"))
-            return redirect(url_for("index"))
-
-        else:
-            return render_template("delete.html", query=query)
+        flash("%s deleted successfully." % (f"{catag}/{name}"))
+        return redirect(url_for("index"))
 
     else:
-        flash("You need to log in first.")
-        return redirect(url_for("index"))
+        return render_template("delete.html", query=query)
 
 
 @app.route('/<catag>/<name>/edit', methods=['POST', 'GET'])
+@login_required
 def edit(catag, name):
-    if logged(session):
-        query = Item.query.filter(Item.name.ilike(name),
-                                  Item.catag.ilike(catag))
+    query = Item.query.filter(Item.name.ilike(name),
+                              Item.catag.ilike(catag))
 
-        if request.method == 'GET':
-            return render_template('edit.html', query=query.first())
-
-        else:
-            exist_st = check_for_existance(query)
-            if exist_st:
-                return exist_st
-
-            query = query.first()
-            query.name = request.form['name']
-            query.catag = request.form['catag']
-            db.session.commit()
-
-            flash(f"Updated successfully to: {query.name} - {query.catag}")
-            return redirect(url_for("index"))
+    if request.method == 'GET':
+        return render_template('edit.html', query=query.first())
 
     else:
-        flash("You need to log in first.")
-        return redirect(url_for("login"))
+        exist_st = check_for_existance(query)
+        if exist_st:
+            return exist_st
+
+        query = query.first()
+        query.name = request.form['name']
+        query.catag = request.form['catag']
+        db.session.commit()
+
+        flash(f"Updated successfully to: {query.name} - {query.catag}")
+        return redirect(url_for("index"))
 
 
 @app.route('/logout')
+@login_required
 def logout():
-    session['session_login_status'] = False
+    logout_user()
     return redirect(url_for('index'))
 
 
@@ -245,52 +247,30 @@ def not_found(error):
 
 @app.route("/api/catagory/<name>")
 def api_catag_view(name):
-    if logged(session):
-        query = Item.query.filter(Item.catag.ilike(name)).all()
-        return jsonify([i.serialize for i in query])
-    else:
-        flash("You need to log in first.")
-        return redirect(url_for("index"))
+    query = Item.query.filter(Item.catag.ilike(name)).all()
+    return jsonify([i.serialize for i in query])
 
 
 @app.route("/api/item/<name>")
 def api_item_view(name):
-    if logged(session):
-        query = Item.query.filter(Item.name.ilike(name)).all()
-        return jsonify([i.serialize for i in query])
-    else:
-        flash("You need to log in first.")
-        return redirect(url_for("index"))
-
+    query = Item.query.filter(Item.name.ilike(name)).all()
+    return jsonify([i.serialize for i in query])
 
 @app.route("/api/item/<int:id>")
 def api_item_by_id(id):
-    if logged(session):
-        query = Item.query.get(id)
-        return jsonify(query.serialize)
-    else:
-        flash("You need to log in first.")
-        return redirect(url_for("index"))
-
+    query = Item.query.get(id)
+    return jsonify(query.serialize)
 
 @app.route("/api/items")
 def api_view_items_all():
-    if logged(session):
-        query = Item.query.all()
-        return jsonify(Items=[i.serialize for i in query])
-    else:
-        flash("You need to log in first.")
-        return redirect(url_for("index"))
+    query = Item.query.all()
+    return jsonify(Items=[i.serialize for i in query])
 
 
 @app.route("/api/users")
 def api_view_users_all():
-    if logged(session):
-        query = User.query.all()
-        return jsonify(Users=[i.serialize for i in query])
-    else:
-        flash("You need to log in first.")
-        return redirect(url_for("index"))
+    query = User.query.all()
+    return jsonify(Users=[i.serialize for i in query])
 
 
 if __name__ == '__main__':

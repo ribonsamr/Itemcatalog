@@ -1,11 +1,12 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import url_for
+from flask_login import UserMixin
 
 # Init empty SQLAlchemy instance, will init the app later.
 db = SQLAlchemy()
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)

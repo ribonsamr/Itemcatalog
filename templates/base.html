@@ -20,7 +20,7 @@
     <title></title>
   </head>
   <body>
-    {% if logged %}
+    {% if current_user.is_authenticated %}
       <li><a href="{{ url_for('index') }}">Home</a></li>
       <li><a href="{{ url_for('add') }}">Add items</a></li>
       <li><a href="{{ url_for('api_view_users_all') }}">API: view users</a></li>

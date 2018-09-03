@@ -2,6 +2,9 @@
 <html lang="en" dir="ltr">
   <head>
     <style>
+      html, body {
+        background-color: #F7F4F0;
+      }
       a {
         color: grey;
         text-decoration: none;
@@ -23,17 +26,24 @@
     <title></title>
   </head>
   <body>
-    {% if current_user.is_authenticated %}
-      <li><a href="{{ url_for('index') }}">Home</a></li>
-      <li><a href="{{ url_for('add') }}">Add items</a></li>
-      <li><a href="{{ url_for('api_view_users_all') }}">API: view users</a></li>
-      <li><a href="{{ url_for('api_view_items_all') }}">API: view items</a></li>
-      <li><a href="{{ url_for('logout') }}">Logout</a></li>
-    {% else %}
-      <li><a href="{{ url_for('index') }}">Home</a></li>
-      <li><a href="{{ url_for('signup') }}">Sign up</a></li>
-      <li><a href="{{ url_for('login') }}">Login</a></li>
-    {% endif %}
+    <nav>
+      {% if current_user.is_authenticated %}
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('add') }}">Add items</a></li>
+        <li><a href="{{ url_for('api_view_users_all') }}">API: view users</a></li>
+        <li><a href="{{ url_for('api_view_items_all') }}">API: view items</a></li>
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+      {% else %}
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('signup') }}">Sign up</a></li>
+        <li><a href="{{ url_for('login') }}">Login</a></li>
+      {% endif %}
+      <form action="/search" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input type="text" name="text" placeholder="keyword">
+        <button type="submit" name="search">Search</button>
+      </form>
+    </nav>
 
     {% with messages = get_flashed_messages() %}
       {% if messages %}

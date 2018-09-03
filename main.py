@@ -13,8 +13,6 @@ from flask_uploads import *
 
 upload_folder = 'uploads'
 
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
-
 # Init a Flask application
 app = Flask(__name__)
 
@@ -43,10 +41,6 @@ login_manager.login_view = "login"
 photos = UploadSet('photos', IMAGES)
 configure_uploads(app, (photos))
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 
 @login_manager.user_loader
 def load_user(id):
@@ -64,7 +58,7 @@ def upload(request):
         flash('No selected file')
         return False
 
-    if file and allowed_file(file.filename):
+    if file:
         filename = photos.save(file)
         return filename, redirect(url_for('image_get', path=filename))
 
@@ -249,7 +243,7 @@ def delete(catag, name):
             return exist_st
 
         # remove the picture first
-        file_path = photos.path(query.first().imgpath)
+        file_path = photos.path(query.first().img_filename)
         os.remove(file_path)
 
         # then delete the item from the database, which delets the path of

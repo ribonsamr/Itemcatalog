@@ -8,12 +8,14 @@
 </script>
 {% endblock %}
 {% block content %}
-  <form class='center' action="{{ url_for('login') }}" method="POST">
+{% if current_user.is_authenticated != True %}
+  <form class='login_form' action="{{ url_for('login') }}" method="POST">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="username" name="username" placeholder="Username">
     <input type="password" name="password" placeholder="Password">
     <button type="submit">Login</button>
   </form>
+{% endif %}
   <div class="g-signin2"
   data-display='grid'
   data-width="inherit"

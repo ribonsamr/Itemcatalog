@@ -32,6 +32,7 @@ function onSignIn(googleUser) {
     contentType: 'application/octet-stream; charset=utf-8',
     success: function(result) {
       $('.signout').attr('style', 'display: relative');
+      $('.login_form').attr('style', 'display: none');
       // console.log(result);
       // $(".result").html(JSON.stringify(result));
       // console.log(result);

@@ -1,0 +1,23 @@
+@media screen and (min-width: 767px) {
+  .container {
+    display: grid;
+  }
+  .g-signin2 > div {
+    width: 50%;
+    margin: auto;
+  }
+  .container form {
+    margin: 0 auto;
+    display: grid;
+    width: 50%;
+  }
+  nav {
+    font-size: 1.1em;
+  }
+  nav input, nav button {
+    padding: 0.8em 1.2em;
+  }
+  nav input {
+    width: 20em;
+  }
+}

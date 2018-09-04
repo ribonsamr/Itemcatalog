@@ -356,6 +356,7 @@ def logout():
         return url_for("index")
     if current_user.google:
         return redirect(url_for('login'))
+    logout_user()
     return redirect(url_for('index'))
 
 

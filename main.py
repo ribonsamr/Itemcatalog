@@ -27,7 +27,8 @@ app.config.update(
     CSRF_ENABLED=True,
     SQLALCHEMY_DATABASE_URI='postgresql:///itemcatag_db',
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
-    UPLOADED_PHOTOS_DEST=upload_folder
+    UPLOADED_PHOTOS_DEST=upload_folder,
+    TEMPLATES_AUTO_RELOAD=True
 )
 
 # Load SQLAlchemy Db

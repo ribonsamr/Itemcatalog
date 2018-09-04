@@ -172,7 +172,7 @@ def signup():
 
                 else:
                     # register this new user
-                    new_user = User(user, password, email)
+                    new_user = User(user, password, email, False)
                     db.session.add(new_user)
                     db.session.commit()
 

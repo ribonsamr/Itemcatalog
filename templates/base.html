@@ -2,34 +2,18 @@
 <html lang="en" dir="ltr">
   <head>
     {% block head %}{% endblock %}
-    <style>
-      html, body {
-        background-color: #F7F4F0;
-      }
-      a {
-        color: grey;
-        text-decoration: none;
-      }
-      a:hover {
-        color: #00E8D1;
-      }
-      a:visited {
-        color: grey;
-      }
-      a:visited:hover {
-        color: #00E8D1;
-      }
-      .delete_item:hover, .delete_item:visited:hover {
-        color: #FF3D3D;
-      }
-    </style>
+    <title>Item Cataglog</title>
     <meta charset="utf-8">
-    <title></title>
+    <!-- <link rel="shortcut icon" type="image/jpg" href=""/> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Georgia" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='resp.css') }}">
   </head>
   <body>
     <nav>
       {% if current_user.is_authenticated %}
-        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a style="float:left;" href="{{ url_for('index') }}">Home</a></li>
         <li><a href="{{ url_for('add') }}">Add items</a></li>
         <li><a href="{{ url_for('api_view_users_all') }}">API: view users</a></li>
         <li><a href="{{ url_for('api_view_items_all') }}">API: view items</a></li>
@@ -42,7 +26,7 @@
       {% endif %}
       <form action="/search" method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-        <input type="text" name="text" placeholder="keyword">
+        <input class='input_search' type="text" name="text" placeholder="keyword">
         <button type="submit" name="search">Search</button>
       </form>
     </nav>
@@ -57,6 +41,8 @@
       {% endif %}
     {% endwith %}
 
-    {% block content %}{% endblock %}
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
   </body>
 </html>

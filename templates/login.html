@@ -4,72 +4,30 @@
 <meta name="google-signin-client_id" content="957567508066-ju7cas7bvc93aqbpmr717gcpljojj070.apps.googleusercontent.com">
 <meta name="google-signin-scope" content="profile email">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='login.js') }}"></script>
 </script>
 {% endblock %}
 {% block content %}
-<form action="{{ url_for('login') }}" method="POST">
-  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-  <input type="username" name="username" placeholder="Username">
-  <input type="password" name="password" placeholder="Password">
-  <input type="submit" value="Log in">
-</form>
-<div class="g-signin2" data-onsuccess="onSignIn"></div>
-
-<a class='signout' style="display: none" href="#" onclick="signOut();">Sign out</a>
-
-<script>
-  function signOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
-      console.log('User signed out.');
-      backendSignOut();
-    });
-  }
-</script>
-
-  <script>
-  var csrf_token = "{{ csrf_token() }}";
-
+  <form class='center' action="{{ url_for('login') }}" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="username" name="username" placeholder="Username">
+    <input type="password" name="password" placeholder="Password">
+    <button type="submit">Login</button>
+  </form>
+  <div class="g-signin2"
+  data-display='grid'
+  data-width="inherit"
+  data-longtitle="true"
+  data-onsuccess="onSignIn"></div>
+  <a class='signout' style="display: none" href="#" onclick="signOut();">Sign out</a>
+  <script type="text/javascript">
   $.ajaxSetup({
     beforeSend: function(xhr, settings) {
+      var csrf_token = "{{ csrf_token() }}";
       if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
         xhr.setRequestHeader("X-CSRFToken", csrf_token);
       }
     }
   });
-
-  function backendSignOut() {
-    $.ajax({
-      type: 'POST',
-      url: '/logout',
-      processData: false,
-      data: true,
-      contentType: 'application/octet-stream; charset=utf-8',
-      success: function(result) {
-        window.location.replace(result)
-      }
-    });
-  }
-  function onSignIn(googleUser) {
-    var id_token = googleUser.getAuthResponse().id_token;
-
-    $('.g-signin2').attr('style', 'display: none');
-
-    $.ajax({
-      type: 'POST',
-      url: '/gconnect',
-      processData: false,
-      data: id_token,
-      contentType: 'application/octet-stream; charset=utf-8',
-      success: function(result) {
-        $('.signout').attr('style', 'display: relative');
-        // console.log(result);
-        // $(".result").html(JSON.stringify(result));
-        // console.log(result);
-        // window.location.replace(result)
-      }
-    });
-    }
-    </script>
-
+  </script>
 {% endblock %}

@@ -9,6 +9,16 @@ html, body {
   box-sizing: border-box;
 }
 
+a, a:visited {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover, a:visited:hover {
+  color: #17202A;
+}
+
+
 .container {
   width: 80%;
   align-items: center;
@@ -87,15 +97,94 @@ input:focus {
   background-color: #F7F4F0;
 }
 
-a, a:visited {
-  color: inherit;
-  text-decoration: none;
+table {
+  border-top: 5px solid lightgrey;
+  border-collapse: collapse;
+  border-left: 1px solid lightgrey;
+  border-right: 1px solid lightgrey;
 }
 
-a:hover, a:visited:hover {
-  color: #17202A;
+table:hover {
+  border-top: 5px solid #5DADE2;
+}
+
+th {
+  border-bottom: 1px solid lightgrey;
+  border-right: 1px solid lightgrey;
+  padding-bottom: 20px;
+  padding-top: 20px;
+}
+
+td {
+  text-align: left;
+  padding: 2px 1.5rem;
+  border-right: 1px solid lightgrey;
+  border-bottom: 1px solid lightgrey;
+}
+
+table a, table a:visited {
+  display: inline-block;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 5px;
+  background-color: #FDFEFE;
+  border-radius: 3px;
+  border-bottom: 2px solid #424242;
+}
+
+nav a {
+  padding: 5px;
+  border-radius: 4px;
+  border-bottom: 3px solid;
+}
+
+nav a:hover, a:visited:hover {
+  border-color: #66BB6A;
+}
+
+table a:hover, table a:visited:hover {
+  border-color: #5DADE2;
+  background-color: #F5F5F5;
 }
 
 .delete_item:hover, .delete_item:visited:hover {
-  color: #FF3D3D;
+  color: white;
+  background-color: #FF3D3D;
+  border-color: #424242;
+}
+
+.edit_item:hover, .edit_item:visited:hover {
+  color: white;
+  background-color: #4CAF50;
+  border-color: #424242;
+}
+
+.api_item:hover, .api_item:visited:hover {
+  color: white;
+  background-color: #7E57C2;
+  border-color: #424242;
+}
+
+footer {
+  margin-top: auto;
+  display: block;
+  bottom: 0;
+  height: auto;
+  text-align: center;
+  font-family: 'Georgia';
+  font-weight: 400;
+  font-size: 1rem;
+}
+
+footer > p {
+  margin: 10px;
+  padding: 0;
+}
+
+footer a, footer a:visited {
+  color: #5DADE2;
+}
+
+footer a:hover, footer a:visited:hover {
+  color: #CB4335;
 }

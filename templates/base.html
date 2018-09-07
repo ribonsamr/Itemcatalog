@@ -13,7 +13,7 @@
   <body>
     <nav>
       {% if current_user.is_authenticated %}
-        <li><a style="float:left;" href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('index') }}">Home</a></li>
         <li><a href="{{ url_for('add') }}">Add items</a></li>
         <li><a href="{{ url_for('api_view_users_all') }}">API: view users</a></li>
         <li><a href="{{ url_for('api_view_items_all') }}">API: view items</a></li>
@@ -44,5 +44,8 @@
     <div class="container">
       {% block content %}{% endblock %}
     </div>
+    <footer>
+      <p>Designed by <a href="https://ribonsamr.github.io" target="_blank">Amr</a>.</p>
+    </footer>
   </body>
 </html>

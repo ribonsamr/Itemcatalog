@@ -1,4 +1,3 @@
-import os
 from flask import Flask, flash, redirect, render_template, \
                   request, session, url_for, jsonify, send_from_directory, \
                   safe_join
@@ -17,18 +16,7 @@ from google.auth.transport import requests as rqs
 app = Flask(__name__)
 
 
-app.config.update(
-    SECRET_KEY=os.urandom(16),
-    HOST='0.0.0.0',
-    DEBUG=True,
-    JSONIFY_PRETTYPRINT_REGULAR=True,
-    ENV="development",
-    CSRF_ENABLED=True,
-    SQLALCHEMY_DATABASE_URI='postgresql:///itemcatag_db',
-    SQLALCHEMY_TRACK_MODIFICATIONS=False,
-    UPLOADED_PHOTOS_DEST='uploads',
-    TEMPLATES_AUTO_RELOAD=True
-)
+app.config.from_pyfile('config.py')
 
 # Load SQLAlchemy Db
 db.init_app(app)

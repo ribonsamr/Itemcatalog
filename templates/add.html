@@ -12,7 +12,7 @@
 <form enctype="multipart/form-data" action="{{ url_for('add') }}" method="POST">
   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
   <input type="input" name="name" placeholder="Name">
-  <input type="input" name="catag" placeholder="catag">
+  <input type="input" name="catagory" placeholder="catagory">
   <input type="file" name="file">
   <input type="submit" value="Add">
 </form>

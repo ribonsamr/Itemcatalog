@@ -1,8 +1,10 @@
+from models import db, User, Item
+from api.api import api
+
 from flask import Flask, flash, redirect, render_template, \
                   request, session, url_for, jsonify, send_from_directory, \
                   safe_join
 from flask_sqlalchemy import SQLAlchemy
-from models import db, User, Item
 from flask_wtf.csrf import CSRFProtect
 from flask_login import current_user, login_user, logout_user, LoginManager, \
                         login_required
@@ -12,27 +14,25 @@ from flask_uploads import *
 from google.oauth2 import id_token
 from google.auth.transport import requests as rqs
 
-# Init a Flask application
+
+
+# ========== Init ==========
 app = Flask(__name__)
-
-
-app.config.from_pyfile('config.py')
-
-# Load SQLAlchemy Db
-db.init_app(app)
-
-# CSRFProtect setup
-csrf = CSRFProtect(app)
-
-# flask-login setup
+csrf = CSRFProtect()
 login_manager = LoginManager()
-login_manager.init_app(app)
-# set the login view function to 'login'
-login_manager.login_view = "login"
-
-# flask-uploads config
 photos = UploadSet('photos', IMAGES)
+
+# ========== Config ==========
+app.config.from_pyfile('config.py')
+app.register_blueprint(api)
+
+db.init_app(app)
+csrf.init_app(app)
+login_manager.init_app(app)
+login_manager.login_view = "login"
 configure_uploads(app, (photos))
+
+
 
 
 @login_manager.user_loader
@@ -215,11 +215,11 @@ def add():
         return render_template('add.html')
 
     else:
-        name, catag = request.form['name'], request.form['catag']
+        name, catagory = request.form['name'], request.form['catagory']
 
-        if name and catag:
+        if name and catagory:
             query = Item.query.filter(Item.name.ilike(name),
-                                      Item.catag.ilike(catag))
+                                      Item.catagory.ilike(catagory))
             if query.first():
                 flash("Item: %s already exists." % (name))
                 return redirect(url_for("add"))
@@ -228,17 +228,17 @@ def add():
                 results = upload(request)
                 if not results:
                     # No image file:
-                    db.session.add(Item(name, catag, ''))
+                    db.session.add(Item(name, catagory, ''))
                     db.session.commit()
-                    flash("%s added in %s successfully." % (name, catag))
+                    flash("%s added in %s successfully." % (name, catagory))
                     return redirect(url_for("index"))
 
                 else:
                     # Image exists
                     filename, redirection = results
-                    db.session.add(Item(name, catag, filename))
+                    db.session.add(Item(name, catagory, filename))
                     db.session.commit()
-                    flash("%s added in %s successfully." % (name, catag))
+                    flash("%s added in %s successfully." % (name, catagory))
                     return redirection
 
         else:
@@ -246,10 +246,10 @@ def add():
             return redirect(url_for("add"))
 
 
-@app.route('/<catag>/<name>')
-def view(catag, name):
+@app.route('/<catagory>/<name>')
+def view(catagory, name):
     query = Item.query.filter(Item.name.ilike(name),
-                              Item.catag.ilike(catag)).first()
+                              Item.catagory.ilike(catagory)).first()
     return render_template('view.html', query=query)
 
 
@@ -284,11 +284,11 @@ def check_for_existance(query):
         None
 
 
-@app.route('/<catag>/<name>/delete', methods=['POST', 'GET'])
+@app.route('/<catagory>/<name>/delete', methods=['POST', 'GET'])
 @login_required
-def delete(catag, name):
+def delete(catagory, name):
     query = Item.query.filter(Item.name.ilike(name),
-                              Item.catag.ilike(catag))
+                              Item.catagory.ilike(catagory))
 
     if request.method == 'POST':
         exist_st = check_for_existance(query)
@@ -296,8 +296,8 @@ def delete(catag, name):
             return exist_st
 
         # remove the picture first
-        if query.first().img_filename:
-            file_path = photos.path(query.first().img_filename)
+        if query.first().image_filename:
+            file_path = photos.path(query.first().image_filename)
             os.remove(file_path)
 
         # then delete the item from the database, which delets the path of
@@ -305,18 +305,18 @@ def delete(catag, name):
         query.delete(synchronize_session=False)
         db.session.commit()
 
-        flash("%s deleted successfully." % (f"{catag}/{name}"))
+        flash("%s deleted successfully." % (f"{catagory}/{name}"))
         return redirect(url_for("index"))
 
     else:
         return render_template("delete.html", query=query)
 
 
-@app.route('/<catag>/<name>/edit', methods=['POST', 'GET'])
+@app.route('/<catagory>/<name>/edit', methods=['POST', 'GET'])
 @login_required
-def edit(catag, name):
+def edit(catagory, name):
     query = Item.query.filter(Item.name.ilike(name),
-                              Item.catag.ilike(catag))
+                              Item.catagory.ilike(catagory))
 
     if request.method == 'GET':
         return render_template('edit.html', query=query.first())
@@ -328,10 +328,10 @@ def edit(catag, name):
 
         query = query.first()
         query.name = request.form['name']
-        query.catag = request.form['catag']
+        query.catagory = request.form['catagory']
         db.session.commit()
 
-        flash(f"Updated successfully to: {query.name} - {query.catag}")
+        flash(f"Updated successfully to: {query.name} - {query.catagory}")
         return redirect(url_for("index"))
 
 
@@ -351,35 +351,6 @@ def logout():
 def not_found(error):
     return render_template('error.html'), 404
 
-
-@app.route("/api/catagory/<name>")
-def api_catag_view(name):
-    query = Item.query.filter(Item.catag.ilike(name)).all()
-    return jsonify([i.serialize for i in query])
-
-
-@app.route("/api/item/<name>")
-def api_item_view(name):
-    query = Item.query.filter(Item.name.ilike(name)).all()
-    return jsonify([i.serialize for i in query])
-
-
-@app.route("/api/item/<int:id>")
-def api_item_by_id(id):
-    query = Item.query.get(id)
-    return jsonify(query.serialize)
-
-
-@app.route("/api/items")
-def api_view_items_all():
-    query = Item.query.all()
-    return jsonify(Items=[i.serialize for i in query])
-
-
-@app.route("/api/users")
-def api_view_users_all():
-    query = User.query.all()
-    return jsonify(Users=[i.serialize for i in query])
 
 
 """

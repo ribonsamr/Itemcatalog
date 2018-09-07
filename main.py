@@ -16,8 +16,7 @@ from google.auth.transport import requests as rqs
 # Init a Flask application
 app = Flask(__name__)
 
-# Flask config
-upload_folder = 'uploads'
+
 app.config.update(
     SECRET_KEY=os.urandom(16),
     HOST='0.0.0.0',
@@ -27,7 +26,7 @@ app.config.update(
     CSRF_ENABLED=True,
     SQLALCHEMY_DATABASE_URI='postgresql:///itemcatag_db',
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
-    UPLOADED_PHOTOS_DEST=upload_folder,
+    UPLOADED_PHOTOS_DEST='uploads',
     TEMPLATES_AUTO_RELOAD=True
 )
 

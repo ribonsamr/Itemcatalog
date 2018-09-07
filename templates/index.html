@@ -2,26 +2,46 @@
 {% block content %}
     <p>Users:</p>
     {% if data %}
-      <ul class=data>
+    <table style='width: auto; margin:auto' class='data'>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
         {% for dt in data %}
-        <li>{{ dt.username }} – {{ dt.email }}</li>
+        <tr>
+          <td>{{ dt.username }}</td>
+          <td>{{ dt.email }}</td>
+        </tr>
         {% endfor %}
-      </ul>
+      </tr>
+    </table>
     {% endif %}
 
     <p>Items:</p>
     {% if items %}
-    <ul class=items>
+    <table style='width: auto; margin:auto' class='items'>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Catagory</th>
+        <th>Image</th>
+        <th>Options</th>
+      </tr>
       {% for item in items %}
-      <li>{{ item.id }} - {{ item.name }} - {{ item.catag }}
-        <a href="{{ url_for('view', catag=item.catag, name=item.name) }}">Link</a> -
-        <a href="{{ url_for('image_get', path=item.img_filename) }}">Image</a> -
-        <a href="{{ url_for('edit', catag=item.catag, name=item.name) }}">Edit</a> -
-        <a class="delete_item" href="{{ url_for('delete', catag=item.catag, name=item.name) }}">Delete</a> -
-        <a href="{{ url_for('api_item_by_id', id=item.id) }}">API</a>
-      </li>
+      <tr>
+        <td>{{ item.id }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.catag }}</td>
+        <td><img style='height:3em' src="{{ url_for('image_get', path=item.img_filename) }}" alt=""></td>
+        <td>
+            <a href="{{ url_for('view', catag=item.catag, name=item.name) }}">Link</a> -
+            <a href="{{ url_for('image_get', path=item.img_filename) }}">Image</a> -
+            <a href="{{ url_for('edit', catag=item.catag, name=item.name) }}">Edit</a> -
+            <a class="delete_item" href="{{ url_for('delete', catag=item.catag, name=item.name) }}">Delete</a> -
+            <a href="{{ url_for('api_item_by_id', id=item.id) }}">API</a>
+        </td>
+      </tr>
       {% endfor %}
-    </ul>
+    </table>
     {% endif %}
 
 {% endblock %}

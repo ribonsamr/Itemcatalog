@@ -12,9 +12,10 @@
     width: 50%;
   }
   nav {
-    font-size: 1.1em;
+    font-size: 1.3em;
   }
   nav input, nav button {
+    margin-top: 10px;
     padding: 0.8em 1.2em;
   }
   nav input {

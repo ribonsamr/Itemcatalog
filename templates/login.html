@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form data-bind="submit: formViewModel.logIn">
+  <input data-bind="textInput: formViewModel.username" placeholder="Username/Email" required>
+  <input data-bind="textInput: formViewModel.password" placeholder="Password" type="password" required>
+
+  <button type='submit'>Commit</button>
+
+  ViewModel:
+  <pre data-bind="text: ko.toJSON(formViewModel, null, 2)"></pre>
+</form>
+
+{% endblock %}

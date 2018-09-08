@@ -32,9 +32,9 @@ def main():
     return render_template('index.html')
 
 
-@app.errorhandler(404)
-def not_found(error):
-    return render_template('error.html'), 404
+# @app.errorhandler(404)
+# def not_found(error):
+#     return render_template('error.html'), 404
 
 # Automatically update static files
 # http://flask.pocoo.org/snippets/40/

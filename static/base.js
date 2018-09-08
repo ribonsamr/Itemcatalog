@@ -80,6 +80,31 @@ function formModel() {
       }
     });
   };
+
+  this.logIn = function() {
+    $.ajax({
+      type: 'POST',
+      url: '/login',
+      processData: false,
+      data: JSON.stringify(ko.toJSON(formViewModel, null, 2)),
+      contentType: 'application/json',
+      success: function(xhr, msg) {
+        mainViewModel.loggedIn(true);
+        window.location.href = '/';
+      },
+      error: function(xhr, msg, error) {
+        if (xhr.status === 400) {
+          location.reload();
+        }
+        if (xhr.status === 302) {
+          window.location.href = xhr.responseText;
+        }
+        if (xhr.status === 405) {
+          alert(xhr.responseText)
+        }
+      }
+    });
+  }
 }
 
 var masterViewModel = (function() {

@@ -1,16 +1,19 @@
 from flask import Blueprint
-from flask_uploads import *
+from flask_uploads import UploadSet, IMAGES, configure_uploads
+from flask_login import login_required
 
 items_manager = Blueprint('/items', __name__)
 
-@app.route('/<catagory>/<name>')
+photos = UploadSet('photos', IMAGES)
+
+@items_manager.route('/<catagory>/<name>')
 def view(catagory, name):
     query = Item.query.filter(Item.name.ilike(name),
                               Item.catagory.ilike(catagory)).first()
     return render_template('view.html', query=query)
 
 
-@app.route("/add", methods=['POST', 'GET'])
+@items_manager.route("/add", methods=['POST', 'GET'])
 @login_required
 def add():
     if request.method == 'GET':
@@ -47,7 +50,7 @@ def add():
             flash("Missing input.")
             return redirect(url_for("add"))
 
-@app.route('/<catagory>/<name>/delete', methods=['POST', 'GET'])
+@items_manager.route('/<catagory>/<name>/delete', methods=['POST', 'GET'])
 @login_required
 def delete(catagory, name):
     query = Item.query.filter(Item.name.ilike(name),
@@ -73,7 +76,7 @@ def delete(catagory, name):
 
     else:
         return render_template("delete.html", query=query)
-@app.route('/<catagory>/<name>/edit', methods=['POST', 'GET'])
+@items_manager.route('/<catagory>/<name>/edit', methods=['POST', 'GET'])
 @login_required
 def edit(catagory, name):
     query = Item.query.filter(Item.name.ilike(name),

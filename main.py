@@ -1,23 +1,25 @@
+import os
+
 from flask import Flask, redirect, render_template, request, url_for
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
+from flask_uploads import configure_uploads
 
 from models import db, User, Item
 from blueprints.api.api import api
-from blueprints.auth.auth import auth
-from blueprints.items.items_manager import items_manager
+from blueprints.auth.auth import auth, csrf, login_manager
+from blueprints.items.items_manager import items_manager, photos
 
-# ========== Init ==========
+
 app = Flask(__name__)
-csrf = CSRFProtect()
-login_manager = LoginManager()
-photos = UploadSet('photos', IMAGES)
 
 # ========== Config ==========
 app.config.from_pyfile('config.py')
-app.register_blueprint(api)
 db.init_app(app)
+app.register_blueprint(api)
+app.register_blueprint(auth)
+app.register_blueprint(items_manager)
 csrf.init_app(app)
 login_manager.init_app(app)
 login_manager.login_view = "login"

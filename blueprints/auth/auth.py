@@ -6,15 +6,16 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from google.oauth2 import id_token
 from google.auth.transport import requests as rqs
 
-
-
 auth = Blueprint('auth', __name__)
+
+csrf = CSRFProtect()
+login_manager = LoginManager()
 
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
 
-@app.route("/login", methods=['POST', 'GET'])
+@auth.route("/login", methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
         if not current_user.is_authenticated:
@@ -50,7 +51,7 @@ def login():
         # else:
         return render_template('login.html')
 
-@app.route("/signup", methods=['POST', 'GET'])
+@auth.route("/signup", methods=['POST', 'GET'])
 def signup():
     if not current_user.is_authenticated:
         if request.method == 'GET':
@@ -96,7 +97,7 @@ def signup():
         flash("You are already logged in.")
         return redirect(url_for("index"))
 
-@app.route('/logout', methods=['POST', 'GET'])
+@auth.route('/logout', methods=['POST', 'GET'])
 @login_required
 def logout():
     if request.method == 'POST':
@@ -107,7 +108,7 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-@app.route("/gconnect", methods=['POST', 'GET'])
+@auth.route("/gconnect", methods=['POST', 'GET'])
 def gconnect():
     if request.method == 'POST':
         if not current_user.is_authenticated:

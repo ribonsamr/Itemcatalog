@@ -10,6 +10,7 @@ html, body {
 }
 
 a, a:visited {
+  cursor: pointer;
   color: inherit;
   text-decoration: none;
 }
@@ -18,18 +19,23 @@ a:hover, a:visited:hover {
   color: #17202A;
 }
 
-
 .container {
+  margin: auto;
   width: 80%;
   align-items: center;
   align-content: center;
 }
 
+header {
+  margin-top: 20px;
+  margin-bottom: 40px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
 nav {
-  background-color: #EAECEE;
   width: 100%;
   font-size: 1em;
-  margin-bottom: 20px;
   text-align: center;
 }
 

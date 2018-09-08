@@ -5,4 +5,4 @@ function addToContent(result) {
   console.log(mainViewModel.content());
 }
 
-getItems(addToContent);
+mainViewModel.getItems(addToContent);

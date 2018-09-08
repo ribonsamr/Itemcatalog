@@ -42,16 +42,15 @@ function mainViewModel() {
         processData: false,
         contentType: 'application/json',
         success: function(xhr, msg) {
-          if (gapi.auth2) {
-            if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
-              var auth2 = gapi.auth2.getAuthInstance();
-              auth2.signOut().then(function () {
-                console.log('User signed out.');
-              });
-            }
-          }
-          mainViewModel.loggedIn(false);
-          window.location.href = '/';
+            window.location.href = '/login';
+
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+              console.log('User signed out.');
+            });
+
+            mainViewModel.loggedIn(false);
+            window.location.href = '/';
         },
         error: function(xhr, msg, error) {
           if (xhr.status === 400) {
@@ -96,6 +95,7 @@ function formModel() {
       contentType: 'application/json',
       success: function(xhr, msg) {
         mainViewModel.loggedIn(true);
+        window.location.href = '/';
       },
       error: function(xhr, msg, error) {
         if (xhr.status === 400) {

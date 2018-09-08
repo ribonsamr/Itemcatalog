@@ -1,14 +1,45 @@
 {% extends "base.html" %}
-
 {% block content %}
-<form data-bind="submit: formViewModel.logIn">
+<form data-bind="ifnot: mainViewModel.loggedIn, submit: formViewModel.logIn">
   <input data-bind="textInput: formViewModel.username" placeholder="Username/Email" required>
   <input data-bind="textInput: formViewModel.password" placeholder="Password" type="password" required>
 
   <button type='submit'>Commit</button>
+  <div class="g-signin2"
+  data-width='inherit'
+  data-onsuccess="onSignIn"></div>
 
   ViewModel:
   <pre data-bind="text: ko.toJSON(formViewModel, null, 2)"></pre>
 </form>
 
+<script type="text/javascript">
+  function onSignIn(googleUser) {
+    var id_token = googleUser.getAuthResponse().id_token;
+
+    $('.g-signin2').attr('style', 'display: none');
+
+    $.ajax({
+      type: 'POST',
+      url: '/gconnect',
+      processData: false,
+      data: id_token,
+      contentType: 'application/octet-stream; charset=utf-8',
+      success: function(result) {
+        mainViewModel.loggedIn(true)
+      },
+      error: function(xhr, msg, error) {
+        if (xhr.status === 400) {
+          location.reload();
+        }
+        if (xhr.status === 302) {
+          window.location.href = xhr.responseText;
+        }
+        if (xhr.status === 405) {
+          alert(xhr.responseText)
+        }
+      }
+    });
+  }
+</script>
 {% endblock %}

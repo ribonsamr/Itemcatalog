@@ -102,44 +102,43 @@ def logout():
     return "OK", 200
 
 
-@auth.route("/gconnect", methods=['POST', 'GET'])
+@auth.route("/gconnect", methods=['POST'])
 def gconnect():
-    if request.method == 'POST':
-        if not current_user.is_authenticated:
-            token = request.data
-            try:
-                # Specify the CLIENT_ID of the app that accesses the backend:
-                idinfo = id_token.verify_oauth2_token(token, rqs.Request(),
-                '957567508066-ju7cas7bvc93aqbpmr717gcpljojj070.apps.googleusercontent.com')
+    if current_user.is_authenticated:
+        return "Already logged in.", 405
 
-                if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
-                    raise ValueError('Wrong issuer.')
+    token = request.data
 
-                # ID token is valid. Get the user's Google Account ID from the decoded token.
-                email = idinfo['email']
-                if email:
-                    query = User.query.filter(User.email.ilike(email)).first()
-                    if query and query.google:
-                        login_user(query, remember=True)
-                        current_user.google_signed = True
-                        return url_for("index")
+    # try:
+    # Specify the CLIENT_ID of the app that accesses the backend:
+    idinfo = id_token.verify_oauth2_token(token, rqs.Request(),
+    '957567508066-ju7cas7bvc93aqbpmr717gcpljojj070.apps.googleusercontent.com')
 
-                    else:
-                        new_user = User(email, '', email, True)
+    if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+        raise ValueError('Wrong issuer.')
 
-                        db.session.add(new_user)
-                        db.session.commit()
+    # ID token is valid. Get the user's Google Account ID from the decoded token.
+    email = idinfo['email']
 
-                        login_user(new_user, remember=True)
-                        current_user.google_signed = True
+    if email:
+        query = User.query.filter(User.email.ilike(email)).first()
+        if query:
+            if query.google:
+                login_user(query, remember=True)
+                return "OK", 200
 
-                        return url_for("index")
+            return "Email exists.", 405
 
-            except ValueError:
-                return "Invalid token"
-        else:
-            return render_template("login.html")
+        # New one, register the user
+        new_user = User(email, '', email, True)
+        db.session.add(new_user)
+        db.session.commit()
 
-                # return jsonify(idinfo)
-    else:
-        return redirect(url_for("login"))
+        login_user(new_user, remember=True)
+
+        return "OK", 200
+
+    return "Missing email.", 405
+
+    # except ValueError:
+    #     return "Invalid token", 405

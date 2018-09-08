@@ -4,6 +4,7 @@ from flask import Flask, redirect, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from flask_uploads import configure_uploads
+from flask_login import current_user
 
 from models import db, User, Item
 
@@ -25,8 +26,10 @@ app.register_blueprint  (items_manager)
 
 
 @app.route('/')
+@app.route('/index')
+@app.route('/home')
 def main():
-    return "A"
+    return render_template('base.html')
 
 
 @app.errorhandler(404)
@@ -50,6 +53,10 @@ def dated_url_for(endpoint, **values):
                                  endpoint, filename)
             values['q'] = int(os.stat(file_path).st_mtime)
     return url_for(endpoint, **values)
+
+@app.context_processor
+def current_user_authed():
+    return dict(current_user_authed=current_user.is_authenticated)
 
 
 if __name__ == '__main__':

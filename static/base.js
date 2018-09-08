@@ -42,15 +42,11 @@ function mainViewModel() {
         processData: false,
         contentType: 'application/json',
         success: function(xhr, msg) {
-            window.location.href = '/login';
-
-            var auth2 = gapi.auth2.getAuthInstance();
+          var auth2 = gapi.auth2.getAuthInstance();
             auth2.signOut().then(function () {
               console.log('User signed out.');
             });
-
-            mainViewModel.loggedIn(false);
-            window.location.href = '/';
+          mainViewModel.loggedIn(false);
         },
         error: function(xhr, msg, error) {
           if (xhr.status === 400) {

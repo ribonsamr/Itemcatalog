@@ -2,21 +2,12 @@ function signOut() {
   var auth2 = gapi.auth2.getAuthInstance();
   auth2.signOut().then(function () {
     console.log('User signed out.');
-    backendSignOut();
+    
   });
 }
 
 function backendSignOut() {
-  $.ajax({
-    type: 'POST',
-    url: '/logout',
-    processData: false,
-    data: true,
-    contentType: 'application/octet-stream; charset=utf-8',
-    success: function(result) {
-      window.location.replace(result)
-    }
-  });
+
 }
 
 function onSignIn(googleUser) {

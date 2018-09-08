@@ -95,16 +95,11 @@ def signup():
                 return "OK", 200
 
 
-@auth.route('/logout', methods=['POST', 'GET'])
+@auth.route('/logout', methods=['POST'])
 @login_required
 def logout():
-    if request.method == 'POST':
-        logout_user()
-        return url_for("index")
-    if current_user.google:
-        return redirect(url_for('login'))
     logout_user()
-    return redirect(url_for('index'))
+    return "OK", 200
 
 
 @auth.route("/gconnect", methods=['POST', 'GET'])

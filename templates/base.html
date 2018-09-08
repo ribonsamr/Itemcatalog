@@ -7,6 +7,9 @@
     <script type="text/javascript" src="{{ url_for('static', filename='libs/jquery-3.3.1.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='libs/knockout-3.4.2.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='base.js') }}"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="957567508066-ju7cas7bvc93aqbpmr717gcpljojj070.apps.googleusercontent.com">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='resp.css') }}">
     <script type="text/javascript">
@@ -25,9 +28,12 @@
   <body>
     <header>
       <nav>
-        <div data-bind="foreach: mainViewModel.navItems">
+          <!-- ko foreach: mainViewModel.navItems -->
           <a data-bind="visible: visib, text: title, attr: { href: url }"></a>
-        </div>
+          <!-- /ko -->
+          <a data-bind="visible: mainViewModel.logoutButton.visib,
+          text: mainViewModel.logoutButton.title,
+          click: mainViewModel.logoutButton.logOut"></a>
       </nav>
     </header>
 

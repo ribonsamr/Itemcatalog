@@ -30,13 +30,43 @@ function mainViewModel() {
     { title: ko.observable('Signup'),
       url: ko.observable('/signup'),
       visib: ko.pureComputed(function() { return !this.loggedIn(); }, this)
-    },
+    }];
 
-    { title: ko.observable('Logout'),
-      url: ko.observable('/logout'),
-      visib: ko.pureComputed(function() { return this.loggedIn(); }, this)
-    },
-  ];
+  this.logoutButton = {
+    title: ko.observable('Logout'),
+    visib: ko.pureComputed(function() { return this.loggedIn(); }, this),
+    logOut: function() {
+      $.ajax({
+        type: 'POST',
+        url: '/logout',
+        processData: false,
+        contentType: 'application/json',
+        success: function(xhr, msg) {
+          if (gapi.auth2) {
+            if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+              var auth2 = gapi.auth2.getAuthInstance();
+              auth2.signOut().then(function () {
+                console.log('User signed out.');
+              });
+            }
+          }
+          mainViewModel.loggedIn(false);
+          window.location.href = '/';
+        },
+        error: function(xhr, msg, error) {
+          if (xhr.status === 400) {
+            location.reload();
+          }
+          if (xhr.status === 302) {
+            window.location.href = xhr.responseText;
+          }
+          if (xhr.status === 405) {
+            alert(xhr.responseText)
+          }
+        }
+      });
+    }
+  }
 
   this.getItems = function(func) {
     $.ajax({

@@ -8,34 +8,10 @@
     <script type="text/javascript" src="{{ url_for('static', filename='libs/knockout-3.4.2.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='base.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    {% block head %}{% endblock %}
-  </head>
-  <body>
-    <header>
-      <nav>
-        <div class='nav_basic'>
-          <a data-bind="attr: { href: Home.url }, text: Home.title"></a>
-          <a data-bind="attr: { href: Items.url }, text: Items.title"></a>
-          <a data-bind="attr: { href: API.url }, text: API.title"></a>
-          <a data-bind="attr: { href: Users.url }, text: Users.title, visible: loggedIn"></a>
-          <a data-bind="attr: { href: Login.url }, text: Login.title, visible: !loggedIn()"></a>
-          <a data-bind="attr: { href: Logout.url }, text: Logout.title, visible: loggedIn()"></a>
-        </div>
-      </nav>
-    </header>
-
-      <div class="container">
-        {% block content %}{% endblock %}
-      </div>
-
-    <footer>
-      <p>Designed by Amr.</p>
-    </footer>
-
-    <script style="display: none" type="text/javascript">
+    <link rel="stylesheet" href="{{ url_for('static', filename='resp.css') }}">
+    <script type="text/javascript">
       var csrf_token = "{{ csrf_token() }}";
-      var current_user_authed = "{{ current_user_authed }}" === 'true';
-
+      var current_user_authed = ({{ current_user_authed }} == true);
       $.ajaxSetup({
           beforeSend: function(xhr, settings) {
               if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
@@ -43,7 +19,33 @@
               }
           }
       });
-
     </script>
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div data-bind="foreach: mainViewModel.navItems">
+          <a data-bind="visible: visib, text: title, attr: { href: url }"></a>
+        </div>
+      </nav>
+    </header>
+
+    <div class="container">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+      <p>Designed by Amr.</p>
+    </footer>
+
+    {% block scripts %}{% endblock %}
   </body>
 </html>

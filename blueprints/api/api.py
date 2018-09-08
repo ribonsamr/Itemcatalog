@@ -26,11 +26,11 @@ def api_item_by_id(id):
 @api.route("/api/items")
 def api_view_items_all():
     query = Item.query.all()
-    return jsonify(Items=[i.serialize for i in query])
+    return jsonify([i.serialize for i in query])
 
 
 @api.route("/api/users")
 @login_required
 def api_view_users_all():
     query = User.query.all()
-    return jsonify(Users=[i.serialize for i in query])
+    return jsonify([i.serialize for i in query])

@@ -29,7 +29,7 @@ app.register_blueprint  (items_manager)
 @app.route('/index')
 @app.route('/home')
 def main():
-    return render_template('base.html')
+    return render_template('index.html')
 
 
 @app.errorhandler(404)
@@ -53,6 +53,7 @@ def dated_url_for(endpoint, **values):
                                  endpoint, filename)
             values['q'] = int(os.stat(file_path).st_mtime)
     return url_for(endpoint, **values)
+
 
 @app.context_processor
 def current_user_authed():

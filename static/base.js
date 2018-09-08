@@ -11,7 +11,7 @@ function getItems(func) {
   });
 }
 
-var navVM = {
+var mainViewModel = {
   Home: { title: ko.observable('Home'), url: ko.observable('/') },
   Items: { title: ko.observable('Items') },
   API: { title: ko.observable('API') },
@@ -23,6 +23,6 @@ var navVM = {
 };
 
 $(function() {
-  ko.applyBindings(navVM);
-  navVM.loggedIn(current_user_authed);
+  ko.applyBindings(mainViewModel);
+  mainViewModel.loggedIn(current_user_authed);
 });

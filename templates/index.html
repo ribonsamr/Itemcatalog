@@ -4,17 +4,20 @@
 {% endblock %}
 {% block content %}
 <table>
-  <tr>
-    <th>Name</th>
-    <th>Catagory</th>
-    <th>Filename</th>
-  </tr>
-  <!-- ko foreach: content -->
+  <thead>
     <tr>
-      <td data-bind='text: name'></td>
-      <td data-bind='text: catagory'></td>
-      <td data-bind='text: image_filename'></td>
+      <th>Name</th>
+      <th>Catagory</th>
+      <th>Filename</th>
     </tr>
-  <!-- /ko -->
+  </thead>
+  <tbody data-bind="foreach: content">
+    <tr>
+      <td data-bind="text: name"></td>
+      <td data-bind="text: catagory"></td>
+      <td data-bind="text: image_filename"></td>
+    </tr>
+  </tbody>
 </table>
+
 {% endblock %}

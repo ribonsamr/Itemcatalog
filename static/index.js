@@ -1,8 +1,8 @@
-function printIt(result) {
+function addToContent(result) {
   for (var i = 0; i < result.length; i++) {
-    navVM.content.push(result[i])
+    mainViewModel.content.push(result[i])
   }
-  console.log(navVM.content());
+  console.log(mainViewModel.content());
 }
 
-getItems(printIt);
+getItems(addToContent);

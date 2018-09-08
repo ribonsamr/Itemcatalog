@@ -104,6 +104,7 @@ input:focus {
 }
 
 table {
+  margin: auto;
   border-top: 5px solid lightgrey;
   border-collapse: collapse;
   border-left: 1px solid lightgrey;

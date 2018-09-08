@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify
 from models import User, Item
+from flask_login import login_required
 
 api = Blueprint('api', __name__)
 
@@ -29,6 +30,7 @@ def api_view_items_all():
 
 
 @api.route("/api/users")
+@login_required
 def api_view_users_all():
     query = User.query.all()
     return jsonify(Users=[i.serialize for i in query])

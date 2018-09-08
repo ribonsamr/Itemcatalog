@@ -36,7 +36,6 @@ def main():
 def not_found(error):
     return render_template('error.html'), 404
 
-
 # Automatically update static files
 # http://flask.pocoo.org/snippets/40/
 
@@ -57,7 +56,7 @@ def dated_url_for(endpoint, **values):
 
 @app.context_processor
 def current_user_authed():
-    return dict(current_user_authed=current_user.is_authenticated)
+    return dict(current_user_authed=str(current_user.is_authenticated).lower())
 
 
 if __name__ == '__main__':

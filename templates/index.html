@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block head %}
+<script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
+{% endblock %}
+{% block content %}
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Catagory</th>
+    <th>Filename</th>
+  </tr>
+  <!-- ko foreach: content -->
+    <tr>
+      <td data-bind='text: name'></td>
+      <td data-bind='text: catagory'></td>
+      <td data-bind='text: image_filename'></td>
+    </tr>
+  <!-- /ko -->
+</table>
+{% endblock %}

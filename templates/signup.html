@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block head %}
+<script type="text/javascript" src="{{ url_for('static', filename='signup.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<form data-bind="submit: formViewModel.submitData">
+  <input data-bind="textInput: formViewModel.userName" placeholder="Username">
+  <input data-bind="textInput: formViewModel.userEmail" placeholder="Email">
+  <input data-bind="textInput: formViewModel.userPassword" placeholder="Password">
+
+  <button type='submit'>Commit</button>
+
+  ViewModel:
+  <pre data-bind="text: ko.toJSON(formViewModel, null, 2)"></pre>
+</form>
+
+{% endblock %}

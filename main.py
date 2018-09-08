@@ -11,7 +11,6 @@ from blueprints.api.api import api
 from blueprints.auth.auth import auth, csrf, login_manager
 from blueprints.items.items_manager import items_manager, photos
 
-
 app = Flask(__name__)
 
 app.config.from_pyfile  ('config.py')
@@ -23,6 +22,11 @@ configure_uploads       (app, (photos))
 app.register_blueprint  (api)
 app.register_blueprint  (auth)
 app.register_blueprint  (items_manager)
+
+
+@app.route('/')
+def main():
+    return "A"
 
 
 @app.errorhandler(404)
@@ -49,4 +53,5 @@ def dated_url_for(endpoint, **values):
 
 
 if __name__ == '__main__':
-    app.run()
+    # app.run(ssl_context=('cert.pem', 'key.pem'))
+    app.run('0.0.0.0', port=5000)

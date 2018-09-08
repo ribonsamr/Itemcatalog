@@ -17,12 +17,13 @@ app = Flask(__name__)
 # ========== Config ==========
 app.config.from_pyfile('config.py')
 db.init_app(app)
+
 app.register_blueprint(api)
 app.register_blueprint(auth)
 app.register_blueprint(items_manager)
+
 csrf.init_app(app)
 login_manager.init_app(app)
-login_manager.login_view = "login"
 configure_uploads(app, (photos))
 
 
@@ -67,4 +68,4 @@ def dated_url_for(endpoint, **values):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run()

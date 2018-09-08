@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item Catalog</title>
+    <script type="text/javascript" src="{{ url_for('static', filename='libs/jquery-3.3.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='libs/knockout-3.4.2.js') }}"></script>
+  </head>
+  <body>
+    <header>
+      <nav>
+      </nav>
+    </header>
+      <div class="container">
+        {% block content %}{% endblock %}
+      </div>
+    <footer>
+      <p>Designed by Amr.</p>
+    </footer>
+
+    <script type="text/javascript">
+      var csrf_token = "{{ csrf_token() }}";
+      var current_user = "{{ current_user_authed }}" === 'true';
+    </script>
+  </body>
+</html>

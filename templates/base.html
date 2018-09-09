@@ -48,6 +48,8 @@
   <header>
     <nav>
       <a href="{{ url_for('main') }}">Home</a>
+      <a data-bind="visible: mainViewModel.usersNav.visib,
+        text: mainViewModel.usersNav.title, click: mainViewModel.getUsers"></a>
       <!-- ko foreach: mainViewModel.navItems -->
         <a data-bind="visible: visib, text: title, attr: { href: url }"></a>
       <!-- /ko -->
@@ -55,6 +57,7 @@
       text: mainViewModel.logoutButton.title,
       click: auth.logout"></a>
     </nav>
+    <pre data-bind="text: flash.msg"></pre>
   </header>
 
   <div class="container">
@@ -65,7 +68,6 @@
         {% endfor %}
       {% endif %}
     {% endwith %}
-    
     {% block content %}{% endblock %}
   </div>
 

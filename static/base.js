@@ -1,10 +1,7 @@
 function mainViewModel() {
   this.loggedIn = ko.observable(false);
   this.content = ko.observableArray([]);
-  this.navItems = [{ title: ko.observable('Users'),
-  url: ko.observable('/users'),
-  visib: ko.pureComputed(function() { return this.loggedIn(); }, this)},
-
+  this.navItems = [
   { title: ko.observable('Login'),
   url: ko.observable('/login'),
   visib: ko.pureComputed(function() { return !this.loggedIn(); }, this)},
@@ -13,17 +10,33 @@ function mainViewModel() {
   url: ko.observable('/signup'),
   visib: ko.pureComputed(function() { return !this.loggedIn(); }, this)}];
 
+  this.usersNav = {title: ko.observable('Users'),
+  url: ko.observable('/users'),
+  visib: ko.pureComputed(function() {
+    return this.loggedIn();
+  }, this)};
+
   this.logoutButton = {
     title: ko.observable('Logout'),
     visib: ko.pureComputed(function() { return this.loggedIn(); }, this),
   }
 
+  this.getUsers = function(func) {
+    $.ajax({
+      type: 'GET',
+      url: '/api/users',
+      dataType: 'json',
+      success: function(result) {
+        console.log((result));
+        flash.print("check your console.");
+      }
+    });
+  };
+
   this.getItems = function(func) {
     $.ajax({
       type: 'GET',
       url: '/api/items',
-      processData: false,
-      data: true,
       dataType: 'json',
       success: function(result) {
         func(result);
@@ -118,11 +131,20 @@ function auth() {
   }
 }
 
+function flash() {
+  var self = this;
+  this.msg = ko.observable();
+  this.print = function(text) {
+    self.msg(text);
+  };
+}
+
 
 var masterViewModel = (function() {
   this.mainViewModel = new mainViewModel();
   this.formViewModel = new formModel();
   this.auth = new auth();
+  this.flash = new flash();
 })();
 
 

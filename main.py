@@ -14,7 +14,7 @@ from blueprints.items.items_manager import items_manager, photos
 
 app = Flask(__name__)
 
-app.config.from_pyfile  ('config.py')
+app.config.from_pyfile  ('config/config.py')
 db.init_app             (app)
 csrf.init_app           (app)
 login_manager.init_app  (app)
@@ -60,5 +60,5 @@ def current_user_authed():
 
 
 if __name__ == '__main__':
-    # app.run(ssl_context=('cert.pem', 'key.pem'))
+    # app.run(ssl_context=('config/cert.pem', 'config/key.pem'))
     app.run('0.0.0.0', port=5000)

@@ -110,7 +110,7 @@ def gconnect():
 
     auth_code = request.data
 
-    CLIENT_SECRET_FILE = 'csec.json'
+    CLIENT_SECRET_FILE = 'config/csec.json'
 
     credentials = client.credentials_from_clientsecrets_and_code(
     CLIENT_SECRET_FILE,

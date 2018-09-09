@@ -7,9 +7,8 @@
 {% block content %}
 
 <div class="view">
-  <div class="addView">
+  <div class="addView" data-bind="visible: mainViewModel.loggedIn()">
     <button
-    data-bind="visible: mainViewModel.loggedIn()"
     type="button"
     class="addButton"
     onclick="addModel.active(!addModel.active())">Add</button>

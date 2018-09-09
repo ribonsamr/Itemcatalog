@@ -17,13 +17,6 @@ def view_by_data(catagory, name):
     return render_template('view.html', query=query)
 
 
-@items_manager.route('/<filename>')
-def view_by_file(filename):
-    query = Item.query.filter(Item.name.ilike(name),
-                              Item.catagory.ilike(catagory)).first()
-    return render_template('view.html', query=query)
-
-
 @items_manager.route("/add", methods=['POST'])
 @login_required
 def add():

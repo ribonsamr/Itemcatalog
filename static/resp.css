@@ -11,7 +11,7 @@
   .container {
     min-height: 400px;
     display: grid;
-    width: 60%;
+    width: 80%;
   }
 
   nav {

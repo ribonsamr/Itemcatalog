@@ -218,6 +218,8 @@ function addModel() {
       success: function(xhr, msg) {
         mainViewModel.refreshContent();
         flash.print("Added.\n" + self.itemName() + ", of catagory: " + self.itemCatagory() + '.');
+        self.itemName('');
+        self.itemCatagory('');
       },
       error: function(xhr, msg, error) {
         if (xhr.status === 400) {

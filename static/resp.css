@@ -9,7 +9,7 @@
   }
 
   .container {
-    margin: 0 auto;
+    min-height: 400px;
     display: grid;
     width: 60%;
   }
@@ -22,7 +22,7 @@
     margin-top: 10px;
     padding: 0.8em 1.2em;
   }
-  
+
   nav input {
     width: 20em;
   }
@@ -30,5 +30,8 @@
   .view span {
     display: inline-block;
     margin: auto;
+  }
+  .addView button {
+    width: 20%;
   }
 }

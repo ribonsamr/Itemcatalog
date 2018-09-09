@@ -48,6 +48,7 @@
   <header>
     <nav>
       <a href="{{ url_for('main') }}">Home</a>
+      <a href="{{ url_for('items') }}">Items</a>
       <a data-bind="visible: mainViewModel.usersNav.visib,
         text: mainViewModel.usersNav.title, click: mainViewModel.getUsers"></a>
       <!-- ko foreach: mainViewModel.navItems -->
@@ -59,7 +60,7 @@
     </nav>
 
     <pre data-bind="text: flash.msg"></pre>
-    
+
   </header>
 
   <div class="container">

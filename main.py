@@ -32,6 +32,11 @@ def main():
     return render_template('index.html')
 
 
+@app.route('/items')
+def items():
+    return render_template('items.html')
+
+
 # @app.errorhandler(404)
 # def not_found(error):
 #     return render_template('error.html'), 404

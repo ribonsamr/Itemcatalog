@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block head %}
+<script type="text/javascript">
+  mainViewModel.refreshContent();
+</script>
+{% endblock %}
+{% block content %}
+
+<div class="view">
+  <div class="addView">
+    <button
+    data-bind="visible: mainViewModel.loggedIn()"
+    type="button"
+    class="addButton"
+    onclick="addModel.active(!addModel.active())">Add</button>
+    <form data-bind="if: mainViewModel.loggedIn(), visible: addModel.active(), submit: addModel.submit">
+        <input data-bind="textInput: addModel.itemName" placeholder="Item name" required>
+        <input data-bind="textInput: addModel.itemCatagory" placeholder="Item catagory" required>
+        <!-- <input type='file' data-bind="attr: { src: addModel.itemFile }"> -->
+        <button type='submit'>Commit</button>
+
+        <!-- ViewModel:
+        <pre data-bind="text: ko.toJSON(addModel, null, 2)"></pre> -->
+    </form>
+  </div>
+  <p data-bind="visible: !mainViewModel.content().length">No items.</p>
+  <!-- ko foreach: mainViewModel.content -->
+    <span>
+      <input class='name' data-bind="enable: mainViewModel.loggedIn, textInput: name">
+      <input class='catagory' data-bind="enable: mainViewModel.loggedIn, textInput: catagory">
+      <!-- <img data-bind='attr: { src: image_filename}' alt=""> -->
+    </span>
+
+    <span id='options' data-bind="visible: mainViewModel.loggedIn">
+      <button data-bind='click: mainViewModel.remove' id='delete' type="button">Delete</button>
+      <button data-bind='click: mainViewModel.edit' id='edit' type="button">Edit</button>
+    </span>
+  <hr>
+  <!-- /ko -->
+
+</div>
+
+{% endblock %}

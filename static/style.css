@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 html, body {
   font-family: 'Georgia', serif, -apple-system;
   margin: 0;
@@ -5,8 +9,7 @@ html, body {
   display: flex;
   min-height: 100vh;
   flex-direction: column;
-  background-color: #F7F4F0;
-  box-sizing: border-box;
+  background-color: #EBEDEF;
 }
 
 a, a:visited {
@@ -15,20 +18,26 @@ a, a:visited {
   text-decoration: none;
 }
 
-a:hover, a:visited:hover {
-  color: #17202A;
-}
-
 .container {
+  display: grid;
+  min-height: 200px;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: white;
   margin: auto;
-  width: 100%;
+  width: 96%;
   align-items: center;
   align-content: center;
+  box-shadow: 0px 5px #A6ACAF;
+  vertical-align: middle;
 }
 
 header {
-  margin-top: 20px;
-  margin-bottom: 40px;
+  color: white;
+  background-color: #212121;
+  width: 100%;
+  padding-top: 20px;
+  padding-bottom: 15px;
   margin-left: 20px;
   margin-right: 20px;
 }
@@ -41,6 +50,7 @@ header pre {
   word-wrap: break-word;
 }
 nav {
+  font-family: sans-serif;
   width: 100%;
   font-size: 1em;
   text-align: center;
@@ -180,14 +190,16 @@ table a:hover, table a:visited:hover {
 }
 
 footer {
-  margin-top: auto;
-  display: block;
-  bottom: 0;
-  height: auto;
+  position: relative;
+  box-shadow: 0px 4px #A6ACAF;
+  background-color: white;
+  border-radius: 5px;
   text-align: center;
   font-family: 'Georgia';
   font-weight: 400;
   font-size: 1rem;
+  margin-top: 30px;
+  margin-bottom: 10px;
 }
 
 footer > p {
@@ -212,17 +224,25 @@ footer a:hover, footer a:visited:hover {
   background-color: inherit;
   outline: none;
   border: 0;
-  border-left: 5px solid #2E4053;
-  border-top-left-radius: 2px;
-  border-bottom-left-radius: 2px;
+  border: 1px solid #566573;
+  border-left: 8px solid #566573;
+  border-radius: 3px;
+}
+
+.view .name {
+  background-color: #FEF5E7;
+}
+
+.view .catagory {
+  background-color: #FDEBD0;
 }
 
 .view input:hover {
-  border-color: #4CAF50;
+  border-left-color: #4CAF50;
 }
 
 .view input:disabled:hover {
-  border-color: #FDD835;
+  border-left-color: #FDD835;
 }
 
 .view button {
@@ -252,7 +272,30 @@ hr:last-of-type {
 }
 
 .addView {
+  background-color: #F2F3F4;
   display: block;
-  width: 50%;
+  width: 90%;
   margin: auto;
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  border-radius: 8px;
+}
+
+.addView input {
+  width: 100%;
+}
+
+.addView button {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.itemsview p {
+  display: inline-flex;
+  margin: auto;
+}
+
+.itemsview {
+  display: grid;
+
 }

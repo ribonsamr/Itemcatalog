@@ -127,7 +127,11 @@ def gconnect():
                 login_user(query, remember=True)
                 return "OK", 200
 
-            return "Email exists.", 405
+            # email exists, link google to it and sign him
+            query.google = True
+            login_user(query)
+
+            return "OK.", 200
 
         # New one, register the user
         new_user = User(email, '', email, True)

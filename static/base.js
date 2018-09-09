@@ -2,21 +2,6 @@ function mainViewModel() {
   this.loggedIn = ko.observable(false);
   this.content = ko.observableArray([]);
   this.navItems = [
-    { title: ko.observable('Home'),
-      url: ko.observable('/'),
-      visib: true
-    },
-
-    { title: ko.observable('Items'),
-      url: ko.observable('/items'),
-      visib: true
-    },
-
-    { title: ko.observable('API'),
-      url: ko.observable('/api'),
-      visib: true
-    },
-
     { title: ko.observable('Users'),
       url: ko.observable('/users'),
       visib: ko.pureComputed(function() { return this.loggedIn(); }, this)
@@ -35,6 +20,7 @@ function mainViewModel() {
   this.logoutButton = {
     title: ko.observable('Logout'),
     visib: ko.pureComputed(function() { return this.loggedIn(); }, this),
+
     logOut: function() {
       $.ajax({
         type: 'POST',
@@ -47,6 +33,7 @@ function mainViewModel() {
               console.log('User signed out.');
             });
           mainViewModel.loggedIn(false);
+          window.location.href = '/';
         },
         error: function(xhr, msg, error) {
           if (xhr.status === 400) {

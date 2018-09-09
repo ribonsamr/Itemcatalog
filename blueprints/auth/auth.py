@@ -3,8 +3,9 @@ from flask_wtf.csrf import CSRFProtect
 from flask_login import current_user, login_user, logout_user, LoginManager, \
                         login_required
 from werkzeug.security import generate_password_hash, check_password_hash
-from google.oauth2 import id_token
-from google.auth.transport import requests as rqs
+from apiclient import discovery
+import httplib2
+from oauth2client import client
 
 from models import db, User
 
@@ -15,7 +16,7 @@ auth = Blueprint('auth', __name__)
 csrf = CSRFProtect()
 login_manager = LoginManager()
 
-login_manager.login_view = "login"
+login_manager.login_view = "auth.login"
 
 @login_manager.user_loader
 def load_user(id):
@@ -107,18 +108,17 @@ def gconnect():
     if current_user.is_authenticated:
         return "Already logged in.", 405
 
-    token = request.data
+    auth_code = request.data
 
-    # try:
-    # Specify the CLIENT_ID of the app that accesses the backend:
-    idinfo = id_token.verify_oauth2_token(token, rqs.Request(),
-    '957567508066-ju7cas7bvc93aqbpmr717gcpljojj070.apps.googleusercontent.com')
+    CLIENT_SECRET_FILE = 'csec.json'
 
-    if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
-        raise ValueError('Wrong issuer.')
+    credentials = client.credentials_from_clientsecrets_and_code(
+    CLIENT_SECRET_FILE,
+    ['https://www.googleapis.com/auth/drive.appdata', 'profile', 'email'],
+    auth_code)
 
-    # ID token is valid. Get the user's Google Account ID from the decoded token.
-    email = idinfo['email']
+    # Get profile info from ID token
+    email = credentials.id_token['email']
 
     if email:
         query = User.query.filter(User.email.ilike(email)).first()

@@ -7,11 +7,20 @@
     <script type="text/javascript" src="{{ url_for('static', filename='libs/jquery-3.3.1.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='libs/knockout-3.4.2.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='base.js') }}"></script>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
-    <meta name="google-signin-client_id" content="957567508066-ju7cas7bvc93aqbpmr717gcpljojj070.apps.googleusercontent.com">
-
+    <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer>
+    </script>
+    <script>
+    function start() {
+      gapi.load('auth2', function() {
+        auth2 = gapi.auth2.init({
+          client_id: '957567508066-ju7cas7bvc93aqbpmr717gcpljojj070.apps.googleusercontent.com',
+        });
+      });
+    }
+  </script>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='resp.css') }}">
+
     <script type="text/javascript">
       var csrf_token = "{{ csrf_token() }}";
       var current_user_authed = ({{ current_user_authed }} == true);
@@ -28,6 +37,7 @@
   <body>
     <header>
       <nav>
+          <a href="{{ url_for('main') }}">Home</a>
           <!-- ko foreach: mainViewModel.navItems -->
           <a data-bind="visible: visib, text: title, attr: { href: url }"></a>
           <!-- /ko -->

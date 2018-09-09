@@ -5,5 +5,6 @@ if [[ $1 = -s ]]; then
 fi
 pip3 uninstall flask-migrate flask-script flask-sqlalchemy flask-wtf
 pip3 uninstall psycopg2-binary flask-login flask-uploads google-auth requests
+pip3 uninstall google-api-python-client oauth2client
 psql -c 'drop database itemcatag_db'
 rm -r migrations

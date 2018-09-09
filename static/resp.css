@@ -31,6 +31,9 @@
     display: inline-block;
     margin: auto;
   }
+  .addView {
+    width: 80%;
+  }
   .addView button {
     width: 20%;
   }

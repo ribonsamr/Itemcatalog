@@ -1,68 +1,79 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Item Catalog</title>
-    <script type="text/javascript" src="{{ url_for('static', filename='libs/jquery-3.3.1.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='libs/knockout-3.4.2.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='base.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='auth.js') }}"></script>
-    <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer>
-    </script>
-    <script>
-    function start() {
-      gapi.load('auth2', function() {
-        auth2 = gapi.auth2.init({
-          client_id: '957567508066-ju7cas7bvc93aqbpmr717gcpljojj070.apps.googleusercontent.com',
-        });
+<head>
+  <title>Item Catalog</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- jQuery, KO, and base.js -->
+  <script type="text/javascript" src="{{ url_for('static', filename='libs/jquery-3.3.1.min.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='libs/knockout-3.4.2.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='base.js') }}"></script>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='resp.css') }}">
+
+  <!-- Google Sign-in setup -->
+  <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
+
+  <!-- On-top script -->
+  <script>
+  // To be used later in KO mainViewModel.loggedIn initing.
+  var current_user_authed = ({{ current_user_authed }} == true);
+
+  // Run Google auth2
+  function start() {
+    gapi.load('auth2', function() {
+      auth2 = gapi.auth2.init({
+        client_id: '957567508066-ju7cas7bvc93aqbpmr717gcpljojj070.apps.googleusercontent.com',
       });
+    });
+  }
+
+  // Run CSRF Protection
+  var csrf_token = "{{ csrf_token() }}";
+  $.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+      if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+        xhr.setRequestHeader("X-CSRFToken", csrf_token);
+      }
     }
+  });
   </script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='resp.css') }}">
 
-    <script type="text/javascript">
-      var csrf_token = "{{ csrf_token() }}";
-      var current_user_authed = ({{ current_user_authed }} == true);
-      $.ajaxSetup({
-          beforeSend: function(xhr, settings) {
-              if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-                  xhr.setRequestHeader("X-CSRFToken", csrf_token);
-              }
-          }
-      });
-    </script>
-    {% block head %}{% endblock %}
-  </head>
-  <body>
-    <header>
-      <nav>
-          <a href="{{ url_for('main') }}">Home</a>
-          <!-- ko foreach: mainViewModel.navItems -->
-          <a data-bind="visible: visib, text: title, attr: { href: url }"></a>
-          <!-- /ko -->
-          <a data-bind="visible: mainViewModel.logoutButton.visib,
-          text: mainViewModel.logoutButton.title,
-          click: auth.logout"></a>
-      </nav>
-    </header>
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="{{ url_for('main') }}">Home</a>
+      <!-- ko foreach: mainViewModel.navItems -->
+        <a data-bind="visible: visib, text: title, attr: { href: url }"></a>
+      <!-- /ko -->
+      <a data-bind="visible: mainViewModel.logoutButton.visib,
+      text: mainViewModel.logoutButton.title,
+      click: auth.logout"></a>
+    </nav>
+  </header>
 
-    <div class="container">
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-          {% for message in messages %}
-            <li>{{ message }}</li>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
-      {% block content %}{% endblock %}
-    </div>
+  <div class="container">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    {% block content %}{% endblock %}
+  </div>
 
-    <footer>
-      <p>Designed by Amr.</p>
-    </footer>
+  <footer>
+    <p>Designed by Amr.</p>
+  </footer>
 
-    {% block scripts %}{% endblock %}
-  </body>
+  {% block scripts %}{% endblock %}
+
+</body>
 </html>

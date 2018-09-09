@@ -2,23 +2,33 @@
   .container {
     display: grid;
   }
+
   .g-signin2 > div {
     width: 50%;
     margin: auto;
   }
+
   .container {
     margin: 0 auto;
     display: grid;
-    width: 50%;
+    width: 60%;
   }
+
   nav {
     font-size: 1.3em;
   }
+
   nav input, nav button {
     margin-top: 10px;
     padding: 0.8em 1.2em;
   }
+  
   nav input {
     width: 20em;
+  }
+
+  .view span {
+    display: inline-block;
+    margin: auto;
   }
 }

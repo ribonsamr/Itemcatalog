@@ -28,6 +28,7 @@ def view_by_file(filename):
 @login_required
 def add():
     j_data = json.loads(request.get_json())
+
     item_name = j_data['itemName']
     item_catagory = j_data['itemCatagory']
 

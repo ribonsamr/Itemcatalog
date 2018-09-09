@@ -5,43 +5,39 @@
 </script>
 {% endblock %}
 {% block content %}
-<button
-data-bind="visible: mainViewModel.loggedIn()"
-style='width: 10%;margin:auto; margin-bottom: 10px;'
-type="button"
-name="button"
-onclick="addModel.active(true)">Add</button>
-<form data-bind="if: mainViewModel.loggedIn(), visible: addModel.active(), submit: addModel.submit">
-    <input data-bind="textInput: addModel.itemName" placeholder="Item name" required>
-    <input data-bind="textInput: addModel.itemCatagory" placeholder="Item catagory" required>
-    <input type='file' data-bind="textInput: addModel.itemFile">
-    <button type='submit'>Commit</button>
 
-    <!-- ViewModel:
-    <pre data-bind="text: ko.toJSON(addModel, null, 2)"></pre> -->
-</form>
-<table class='items-table'>
+<div class="view">
+  <div class="addView">
+    <button
+    data-bind="visible: mainViewModel.loggedIn()"
+    type="button"
+    class="addButton"
+    onclick="addModel.active(true)">Add</button>
+    <form data-bind="if: mainViewModel.loggedIn(), visible: addModel.active(), submit: addModel.submit">
+        <input data-bind="textInput: addModel.itemName" placeholder="Item name" required>
+        <input data-bind="textInput: addModel.itemCatagory" placeholder="Item catagory" required>
+        <!-- <input type='file' data-bind="attr: { src: addModel.itemFile }"> -->
+        <button type='submit'>Commit</button>
 
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Catagory</th>
-      <th>Image</th>
-      <th data-bind="visible: mainViewModel.loggedIn">Options</th>
-    </tr>
-  </thead>
-  <tbody data-bind="foreach: mainViewModel.content">
-    <tr>
-      <td><input data-bind="textInput: name"></td>
-      <td><input data-bind="textInput: catagory"></td>
-      <td><input type='file' data-bind="textInput: image_filename"></td>
+        <!-- ViewModel:
+        <pre data-bind="text: ko.toJSON(addModel, null, 2)"></pre> -->
+    </form>
+  </div>
+  <p data-bind="visible: !mainViewModel.content().length">No items.</p>
+  <!-- ko foreach: mainViewModel.content -->
+    <span>
+      <input data-bind="enable: mainViewModel.loggedIn, textInput: name">
+      <input data-bind="enable: mainViewModel.loggedIn, textInput: catagory">
+      <!-- <img data-bind='attr: { src: image_filename}' alt=""> -->
+    </span>
 
-      <td data-bind="visible: mainViewModel.loggedIn">
-        <button data-bind='click: mainViewModel.remove' type="button">Delete</button>
-        <button data-bind='click: mainViewModel.edit' type="edit">Edit</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+    <span id='options' data-bind="visible: mainViewModel.loggedIn">
+      <button data-bind='click: mainViewModel.remove' id='delete' type="button">Delete</button>
+      <button data-bind='click: mainViewModel.edit' id='edit' type="button">Edit</button>
+    </span>
+  <hr>
+  <!-- /ko -->
+
+</div>
 
 {% endblock %}

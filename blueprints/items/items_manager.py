@@ -1,81 +1,76 @@
-from flask import Blueprint
+from flask import Blueprint, request
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 from flask_login import login_required
+
+from models import Item, db
+
+import json
 
 items_manager = Blueprint('/items', __name__)
 
 photos = UploadSet('photos', IMAGES)
 
 @items_manager.route('/<catagory>/<name>')
-def view(catagory, name):
+def view_by_data(catagory, name):
     query = Item.query.filter(Item.name.ilike(name),
                               Item.catagory.ilike(catagory)).first()
     return render_template('view.html', query=query)
 
 
-@items_manager.route("/add", methods=['POST', 'GET'])
+@items_manager.route('/<filename>')
+def view_by_file(filename):
+    query = Item.query.filter(Item.name.ilike(name),
+                              Item.catagory.ilike(catagory)).first()
+    return render_template('view.html', query=query)
+
+
+@items_manager.route("/add", methods=['POST'])
 @login_required
 def add():
-    if request.method == 'GET':
-        return render_template('add.html')
+    j_data = json.loads(request.get_json())
+    item_name = j_data['itemName']
+    item_catagory = j_data['itemCatagory']
 
-    else:
-        name, catagory = request.form['name'], request.form['catagory']
+    if not item_name or not item_catagory:
+        return "Missing fields.", 405
 
-        if name and catagory:
-            query = Item.query.filter(Item.name.ilike(name),
-                                      Item.catagory.ilike(catagory))
-            if query.first():
-                flash("Item: %s already exists." % (name))
-                return redirect(url_for("add"))
+    query = Item.query.filter(Item.name.ilike(item_name),
+                              Item.catagory.ilike(item_catagory)).first()
 
-            else:
-                results = upload(request)
-                if not results:
-                    # No image file:
-                    db.session.add(Item(name, catagory, ''))
-                    db.session.commit()
-                    flash("%s added in %s successfully." % (name, catagory))
-                    return redirect(url_for("index"))
+    if query:
+        return "Already exists", 405
 
-                else:
-                    # Image exists
-                    filename, redirection = results
-                    db.session.add(Item(name, catagory, filename))
-                    db.session.commit()
-                    flash("%s added in %s successfully." % (name, catagory))
-                    return redirection
+    db.session.add(Item(item_name, item_catagory, ''))
+    db.session.commit()
 
-        else:
-            flash("Missing input.")
-            return redirect(url_for("add"))
+    return "OK", 200
 
-@items_manager.route('/<catagory>/<name>/delete', methods=['POST', 'GET'])
+
+@items_manager.route('/delete', methods=['POST'])
 @login_required
-def delete(catagory, name):
-    query = Item.query.filter(Item.name.ilike(name),
-                              Item.catagory.ilike(catagory))
+def delete():
+    j_data = json.loads(request.get_json())
+    item_name = j_data['itemName']
+    item_catagory = j_data['itemCatagory']
 
-    if request.method == 'POST':
-        exist_st = check_for_existance(query)
-        if exist_st:
-            return exist_st
+    query = Item.query.filter(Item.name.ilike(item_name),
+                              Item.catagory.ilike(item_catagory))
 
-        # remove the picture first
-        if query.first().image_filename:
-            file_path = photos.path(query.first().image_filename)
-            os.remove(file_path)
+    if not query.first():
+        return "Not found", 404
+
+    query.delete(synchronize_session=False)
+    db.session.commit()
+
+    return "OK", 200
+        # # remove the picture first
+        # if query.first().image_filename:
+        #     file_path = photos.path(query.first().image_filename)
+        #     os.remove(file_path)
 
         # then delete the item from the database, which delets the path of
         # the picture too.
-        query.delete(synchronize_session=False)
-        db.session.commit()
 
-        flash("%s deleted successfully." % (f"{catagory}/{name}"))
-        return redirect(url_for("index"))
-
-    else:
-        return render_template("delete.html", query=query)
 @items_manager.route('/<catagory>/<name>/edit', methods=['POST', 'GET'])
 @login_required
 def edit(catagory, name):

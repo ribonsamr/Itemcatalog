@@ -1,16 +1,35 @@
 {% extends "base.html" %}
 {% block head %}
-<script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
+<script type="text/javascript">
+  mainViewModel.refreshContent();
+</script>
+<!-- <script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script> -->
 {% endblock %}
 {% block content %}
+<button
+data-bind="visible: mainViewModel.loggedIn()"
+style='width: 10%;margin:auto; margin-bottom: 10px;'
+type="button"
+name="button"
+onclick="addModel.active(true)">Add</button>
+<form data-bind="if: mainViewModel.loggedIn(), visible: addModel.active(), submit: addModel.submit">
+    <input data-bind="textInput: addModel.itemName" placeholder="Item name" required>
+    <input data-bind="textInput: addModel.itemCatagory" placeholder="Item catagory" required>
+    <input type='file' data-bind="textInput: addModel.itemFile">
+    <button type='submit'>Commit</button>
+
+    ViewModel:
+    <pre data-bind="text: ko.toJSON(addModel, null, 2)"></pre>
+</form>
 
 <table class='items-table'>
-  <caption>Items</caption>
+
   <thead>
     <tr>
       <th>Name</th>
       <th>Catagory</th>
-      <th>Filename</th>
+      <th>Image</th>
+      <th>Options</th>
     </tr>
   </thead>
   <tbody data-bind="foreach: mainViewModel.content">
@@ -18,6 +37,7 @@
       <td data-bind="text: name"></td>
       <td data-bind="text: catagory"></td>
       <td data-bind="text: image_filename"></td>
+      <td >options</td>
     </tr>
   </tbody>
 </table>

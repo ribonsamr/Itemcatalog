@@ -1,6 +1,7 @@
 function mainViewModel() {
   this.loggedIn = ko.observable(false);
   this.content = ko.observableArray([]);
+
   this.navItems = [
   { title: ko.observable('Login'),
   url: ko.observable('/login'),
@@ -44,6 +45,15 @@ function mainViewModel() {
     });
   };
 
+  this.refreshContent = function() {
+    let result = this.getItems(function(result) {
+      mainViewModel.content([]);
+      for (var i = 0; i < result.length; i++) {
+        mainViewModel.content.push(result[i])
+      }
+      console.log(mainViewModel.content());
+    });
+  };
 }
 
 function formModel() {
@@ -139,12 +149,44 @@ function flash() {
   };
 }
 
+function addModel() {
+  this.itemName = ko.observable();
+  this.itemCatagory = ko.observable();
+  this.itemFile = ko.observable();
+  this.active = ko.observable(false);
+  this.submit = function () {
+    $.ajax({
+      type: 'POST',
+      url: '/add',
+      data: JSON.stringify(ko.toJSON(addModel, null, 2)),
+      contentType: 'application/json',
+      success: function(xhr, msg) {
+        mainViewModel.refreshContent();
+      },
+      error: function(xhr, msg, error) {
+        if (xhr.status === 400) {
+          console.log(xhr.responseText);
+          console.log(msg);
+          console.log(error);
+          // location.reload();
+        }
+        if (xhr.status === 302) {
+          window.location.href = xhr.responseText;
+        }
+        if (xhr.status === 405) {
+          alert(xhr.responseText)
+        }
+      }
+    });
+  }
+}
 
 var masterViewModel = (function() {
   this.mainViewModel = new mainViewModel();
   this.formViewModel = new formModel();
   this.auth = new auth();
   this.flash = new flash();
+  this.addModel = new addModel();
 })();
 
 

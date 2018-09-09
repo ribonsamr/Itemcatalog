@@ -129,6 +129,7 @@ def gconnect():
 
             # email exists, link google to it and sign him
             query.google = True
+            db.session.commit()
             login_user(query)
 
             return "OK.", 200

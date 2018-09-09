@@ -7,6 +7,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='libs/jquery-3.3.1.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='libs/knockout-3.4.2.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='base.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='auth.js') }}"></script>
     <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer>
     </script>
     <script>
@@ -43,7 +44,7 @@
           <!-- /ko -->
           <a data-bind="visible: mainViewModel.logoutButton.visib,
           text: mainViewModel.logoutButton.title,
-          click: mainViewModel.logoutButton.logOut"></a>
+          click: auth.logout"></a>
       </nav>
     </header>
 

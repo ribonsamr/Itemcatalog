@@ -1,75 +1,40 @@
 {% extends "base.html" %}
 {% block content %}
-<form data-bind="ifnot: mainViewModel.loggedIn, submit: formViewModel.logIn">
+<form data-bind="ifnot: mainViewModel.loggedIn, submit: auth.login">
   <input data-bind="textInput: formViewModel.username" placeholder="Username/Email" required>
   <input data-bind="textInput: formViewModel.password" placeholder="Password" type="password" required>
-
-  <button id="signinButton"
-  data-width='inherit'>Sign in with Google</button>
-  <script>
-
-  </script>
   <button type='submit'>Commit</button>
 
-  ViewModel:
-  <pre data-bind="text: ko.toJSON(formViewModel, null, 2)"></pre>
+  <!-- ViewModel:
+  <pre data-bind="text: ko.toJSON(formViewModel, null, 2)"></pre> -->
 </form>
+
+<button id="signinButton"
+data-width='inherit'>Sign in with Google</button>
 
 <script type="text/javascript">
   $('#signinButton').click(function() {
-    // signInCallback defined in step 6.
     auth2.grantOfflineAccess().then(signInCallback);
   });
 
   function signInCallback(authResult) {
-  if (authResult['code']) {
+    if (authResult['code']) {
+      $('#signinButton').attr('style', 'display: none');
 
-    // Hide the sign-in button now that the user is authorized, for example:
-    $('#signinButton').attr('style', 'display: none');
-
-    // Send the code to the server
-    $.ajax({
-      type: 'POST',
-      url: '/gconnect',
-      contentType: 'application/octet-stream; charset=utf-8',
-      success: function(result) {
-        mainViewModel.loggedIn(true);
-        window.location.href = '/';
-      },
-      processData: false,
-      data: authResult['code']
-    });
-  } else {
-    // There was an error.
-  }
-}
-
-
-  function onSignIn(googleUser) {
-    var id_token = googleUser.getAuthResponse().id_token;
-
-    $('.g-signin2').attr('style', 'display: none');
-
-    $.ajax({
-      type: 'POST',
-      url: '/gconnect',
-      data: id_token,
-      contentType: 'application/octet-stream; charset=utf-8',
-      success: function(result) {
-
-      },
-      error: function(xhr, msg, error) {
-        if (xhr.status === 400) {
-          location.reload();
-        }
-        if (xhr.status === 302) {
-          window.location.href = xhr.responseText;
-        }
-        if (xhr.status === 405) {
-          alert(xhr.responseText);
-        }
-      }
-    });
+      $.ajax({
+        type: 'POST',
+        url: '/gconnect',
+        contentType: 'application/octet-stream; charset=utf-8',
+        success: function(result) {
+          mainViewModel.loggedIn(true);
+          window.location.href = '/';
+        },
+        processData: false,
+        data: authResult['code']
+      });
+    } else {
+      alert("Login failed.");
+    }
   }
 </script>
 {% endblock %}

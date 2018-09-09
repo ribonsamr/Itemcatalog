@@ -3,7 +3,6 @@
 <script type="text/javascript">
   mainViewModel.refreshContent();
 </script>
-<!-- <script type="text/javascript" src="{{ url_for('static', filename='index.js') }}"></script> -->
 {% endblock %}
 {% block content %}
 <button
@@ -21,7 +20,6 @@ onclick="addModel.active(true)">Add</button>
     ViewModel:
     <pre data-bind="text: ko.toJSON(addModel, null, 2)"></pre>
 </form>
-
 <table class='items-table'>
 
   <thead>
@@ -29,15 +27,19 @@ onclick="addModel.active(true)">Add</button>
       <th>Name</th>
       <th>Catagory</th>
       <th>Image</th>
-      <th>Options</th>
+      <th data-bind="visible: mainViewModel.loggedIn">Options</th>
     </tr>
   </thead>
   <tbody data-bind="foreach: mainViewModel.content">
     <tr>
-      <td data-bind="text: name"></td>
-      <td data-bind="text: catagory"></td>
-      <td data-bind="text: image_filename"></td>
-      <td >options</td>
+      <td><input data-bind="textInput: name"></td>
+      <td><input data-bind="textInput: catagory"></td>
+      <td><input type='file' data-bind="textInput: image_filename"></td>
+
+      <td data-bind="visible: mainViewModel.loggedIn">
+        <button data-bind='click: mainViewModel.remove' type="button">Delete</button>
+        <button data-bind='click: mainViewModel.edit' type="edit">Edit</button>
+      </td>
     </tr>
   </tbody>
 </table>

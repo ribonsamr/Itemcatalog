@@ -54,6 +54,58 @@ function mainViewModel() {
       console.log(mainViewModel.content());
     });
   };
+
+  this.edit = function(item) {
+    $.ajax({
+      type: 'POST',
+      url: '/edit',
+      data: JSON.stringify(item),
+      contentType: 'application/json',
+      success: function(xhr, msg) {
+        mainViewModel.refreshContent();
+      },
+      error: function(xhr, msg, error) {
+        if (xhr.status === 400) {
+          console.log(xhr.responseText);
+          console.log(msg);
+          console.log(error);
+          // location.reload();
+        }
+        if (xhr.status === 302) {
+          window.location.href = xhr.responseText;
+        }
+        if (xhr.status === 405) {
+          alert(xhr.responseText)
+        }
+      }
+    });
+  }
+
+  this.remove = function(item) {
+    $.ajax({
+      type: 'POST',
+      url: '/delete',
+      data: JSON.stringify(item),
+      contentType: 'application/json',
+      success: function(xhr, msg) {
+        mainViewModel.refreshContent();
+      },
+      error: function(xhr, msg, error) {
+        if (xhr.status === 400) {
+          console.log(xhr.responseText);
+          console.log(msg);
+          console.log(error);
+          // location.reload();
+        }
+        if (xhr.status === 302) {
+          window.location.href = xhr.responseText;
+        }
+        if (xhr.status === 405) {
+          alert(xhr.responseText)
+        }
+      }
+    });
+  }
 }
 
 function formModel() {

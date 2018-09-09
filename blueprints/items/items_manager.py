@@ -49,14 +49,15 @@ def add():
 @items_manager.route('/delete', methods=['POST'])
 @login_required
 def delete():
-    j_data = json.loads(request.get_json())
-    item_name = j_data['itemName']
-    item_catagory = j_data['itemCatagory']
+    j_data = request.get_json()
 
-    query = Item.query.filter(Item.name.ilike(item_name),
-                              Item.catagory.ilike(item_catagory))
+    item_id = j_data['id']
+    # item_name = j_data['name']
+    # item_catagory = j_data['catagory']
 
-    if not query.first():
+    query = Item.query.filter(Item.id==item_id)
+
+    if not query:
         return "Not found", 404
 
     query.delete(synchronize_session=False)
@@ -71,27 +72,27 @@ def delete():
         # then delete the item from the database, which delets the path of
         # the picture too.
 
-@items_manager.route('/<catagory>/<name>/edit', methods=['POST', 'GET'])
+@items_manager.route('/edit', methods=['POST'])
 @login_required
-def edit(catagory, name):
-    query = Item.query.filter(Item.name.ilike(name),
-                              Item.catagory.ilike(catagory))
+def edit():
+    j_data = request.get_json()
 
-    if request.method == 'GET':
-        return render_template('edit.html', query=query.first())
+    item_id = j_data['id']
+    item_name = j_data['name']
+    item_catagory = j_data['catagory']
 
-    else:
-        exist_st = check_for_existance(query)
-        if exist_st:
-            return exist_st
+    query = Item.query.filter(Item.id==item_id)
 
-        query = query.first()
-        query.name = request.form['name']
-        query.catagory = request.form['catagory']
-        db.session.commit()
+    if not query:
+        return "Not found", 404
 
-        flash(f"Updated successfully to: {query.name} - {query.catagory}")
-        return redirect(url_for("index"))
+    query = query.first()
+    query.name = item_name
+    query.catagory = item_catagory
+    db.session.commit()
+
+    return "OK", 200
+
 def upload(request):
     if 'file' not in request.files:
         flash('No files attached.')

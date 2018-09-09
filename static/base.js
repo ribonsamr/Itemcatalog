@@ -63,6 +63,7 @@ function mainViewModel() {
       contentType: 'application/json',
       success: function(xhr, msg) {
         mainViewModel.refreshContent();
+        flash.print("Edit done.\n" + item.name + ", of catagory: " + item.catagory + '.');
       },
       error: function(xhr, msg, error) {
         if (xhr.status === 400) {
@@ -89,6 +90,7 @@ function mainViewModel() {
       contentType: 'application/json',
       success: function(xhr, msg) {
         mainViewModel.refreshContent();
+        flash.print("Removed item: " + item.name + ", of catagory: " + item.catagory + '.');
       },
       error: function(xhr, msg, error) {
         if (xhr.status === 400) {
@@ -202,6 +204,7 @@ function flash() {
 }
 
 function addModel() {
+  var self = this;
   this.itemName = ko.observable();
   this.itemCatagory = ko.observable();
   this.itemFile = ko.observable();
@@ -214,6 +217,7 @@ function addModel() {
       contentType: 'application/json',
       success: function(xhr, msg) {
         mainViewModel.refreshContent();
+        flash.print("Added.\n" + self.itemName() + ", of catagory: " + self.itemCatagory() + '.');
       },
       error: function(xhr, msg, error) {
         if (xhr.status === 400) {

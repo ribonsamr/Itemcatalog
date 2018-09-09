@@ -124,7 +124,7 @@ th {
 
 td {
   text-align: left;
-  padding: 2px 1.5rem;
+  padding: 0px 1rem;
   border-right: 1px solid lightgrey;
   border-bottom: 1px solid lightgrey;
 }
@@ -194,4 +194,8 @@ footer a, footer a:visited {
 
 footer a:hover, footer a:visited:hover {
   color: #CB4335;
+}
+
+form input, form button, table input, table button {
+  margin: 0;
 }

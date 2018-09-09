@@ -1,16 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
-<form data-bind="ifnot: mainViewModel.loggedIn, submit: auth.login">
-  <input data-bind="textInput: formViewModel.username" placeholder="Username/Email" required>
-  <input data-bind="textInput: formViewModel.password" placeholder="Password" type="password" required>
-  <button type='submit'>Commit</button>
+<div class="loginView">
+  <form data-bind="ifnot: mainViewModel.loggedIn, submit: auth.login">
+    <input data-bind="textInput: formViewModel.username" placeholder="Username/Email" required>
+    <input data-bind="textInput: formViewModel.password" placeholder="Password" type="password" required>
+    <button type='submit'>Commit</button>
 
-  <!-- ViewModel:
-  <pre data-bind="text: ko.toJSON(formViewModel, null, 2)"></pre> -->
-</form>
+    <!-- ViewModel:
+    <pre data-bind="text: ko.toJSON(formViewModel, null, 2)"></pre> -->
+  </form>
 
-<button id="signinButton"
-data-width='inherit'>Sign in with Google</button>
+  <button id="signinButton"
+  data-width='inherit'>Sign in with Google</button>
+
+</div>
 
 <script type="text/javascript">
   $('#signinButton').click(function() {

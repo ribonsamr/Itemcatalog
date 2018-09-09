@@ -1,18 +1,16 @@
 {% extends "base.html" %}
-{% block head %}
-<script type="text/javascript" src="{{ url_for('static', filename='signup.js') }}"></script>
-{% endblock %}
 
 {% block content %}
-<form data-bind="submit: auth.submitData">
-  <input data-bind="textInput: formViewModel.username" placeholder="Username" required>
-  <input data-bind="textInput: formViewModel.email" placeholder="Email" type="email" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" required>
-  <input data-bind="textInput: formViewModel.password" placeholder="Password" type="password" required>
+<div class="loginView">
+  <form data-bind="submit: auth.submitData">
+    <input data-bind="textInput: formViewModel.username" placeholder="Username" required>
+    <input data-bind="textInput: formViewModel.email" placeholder="Email" type="email" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" required>
+    <input data-bind="textInput: formViewModel.password" placeholder="Password" type="password" required>
 
-  <button type='submit'>Commit</button>
+    <button type='submit'>Commit</button>
 
-  ViewModel:
-  <pre data-bind="text: ko.toJSON(formViewModel, null, 2)"></pre>
-</form>
-
+    <!-- ViewModel:
+    <pre data-bind="text: ko.toJSON(formViewModel, null, 2)"></pre> -->
+  </form>
+</div>
 {% endblock %}

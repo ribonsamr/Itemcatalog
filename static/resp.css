@@ -34,4 +34,10 @@
   .addView button {
     width: 20%;
   }
+
+  .loginView {
+    margin: auto;
+    width: 50%;
+  }
+
 }

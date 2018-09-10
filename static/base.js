@@ -49,9 +49,25 @@ function mainViewModel() {
     let result = this.getItems(function(result) {
       mainViewModel.content([]);
       for (var i = 0; i < result.length; i++) {
-        mainViewModel.content.push(result[i])
+        data = result[i];
+        filename = data.image_filename;
+        if (!filename) {
+          mainViewModel.content.push(data);
+        } else {
+          console.log(data);
+          $.ajax({
+            type: 'POST',
+            url: '/image',
+            async: false,
+            data: {filename: filename},
+            success: function(result) {
+              data.image_filename = result;
+              mainViewModel.content.push(data);
+              console.log(data);
+            }
+          });
+        }
       }
-      // console.log(mainViewModel.content());
     });
   };
 

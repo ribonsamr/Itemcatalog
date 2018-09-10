@@ -50,6 +50,11 @@ def add():
 
     return "OK", 200
 
+@items_manager.route('/image', methods=['POST'])
+def get_image():
+    file_url = photos.url(request.values['filename'])
+    return file_url
+
 
 @items_manager.route('/delete', methods=['POST'])
 @login_required
@@ -74,13 +79,6 @@ def delete():
     db.session.commit()
 
     return "OK", 200
-        # # remove the picture first
-        # if query.first().image_filename:
-        #     file_path = photos.path(query.first().image_filename)
-        #     os.remove(file_path)
-
-        # then delete the item from the database, which delets the path of
-        # the picture too.
 
 @items_manager.route('/edit', methods=['POST'])
 @login_required

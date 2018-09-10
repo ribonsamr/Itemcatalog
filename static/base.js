@@ -226,7 +226,7 @@ function addModel() {
 
   this.active = ko.observable(false);
 
-  this.submit = function (formData) {
+  this.submit = function(formData) {
     file = formData.elements.item_file;
     name = self.itemName();
     catagory = self.itemCatagory();
@@ -247,9 +247,11 @@ function addModel() {
       cache: false,
       success: function(data) {
         mainViewModel.refreshContent();
+        flash.print('Added item: ' + name + ', of catagory: ' + catagory + '.');
         self.itemName('');
         self.itemCatagory('');
         self.itemFile('');
+
       },
       error: function(xhr, msg, error) {
         if (xhr.status === 400) {

@@ -58,7 +58,6 @@ function mainViewModel() {
           $.ajax({
             type: 'POST',
             url: '/image',
-            async: false,
             data: {filename: filename},
             success: function(result) {
               data.image_filename = result;

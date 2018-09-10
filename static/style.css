@@ -3,7 +3,7 @@
 }
 
 html, body {
-  font-family: 'Georgia', serif, -apple-system;
+  font-family: sans-serif, -apple-system;
   margin: 0;
   padding: 0;
   display: flex;
@@ -317,7 +317,6 @@ hr:last-of-type {
   overflow: hidden;
   height: 140px;
   width: 120px;
-  display: inline-block;
   border: 1px solid #A6ACAF;
   box-shadow: 0px -3px #A6ACAF;
   margin: auto;
@@ -331,6 +330,7 @@ hr:last-of-type {
   display: block;
   margin: auto;
   margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .card p {
@@ -340,10 +340,15 @@ hr:last-of-type {
 
 .card #name {
   display: block;
-  grid-row: 1/2;
+  grid-row: 2/3;
 }
 
 .card #catagory {
+  color: #873600;
   display: block;
-  grid-row: 2/2;
+  grid-row: 3/3;
+}
+
+.card:hover {
+  background-color: #F7F9F9;
 }

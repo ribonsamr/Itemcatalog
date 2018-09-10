@@ -1,10 +1,11 @@
+import os
+import json
+
 from flask import Blueprint, request
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 from flask_login import login_required
 
 from models import Item, db
-
-import json
 
 items_manager = Blueprint('/items', __name__)
 
@@ -56,13 +57,18 @@ def delete():
     j_data = request.get_json()
 
     item_id = j_data['id']
-    # item_name = j_data['name']
-    # item_catagory = j_data['catagory']
 
     query = Item.query.filter(Item.id==item_id)
 
     if not query:
         return "Not found", 404
+
+    item = query.first()
+
+    if item.image_filename:
+        file_path = photos.path(item.image_filename)
+        os.remove(file_path)
+
 
     query.delete(synchronize_session=False)
     db.session.commit()

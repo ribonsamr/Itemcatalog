@@ -5,15 +5,15 @@
 </script>
 {% endblock %}
 {% block content %}
-
+<p data-bind="visible: !mainViewModel.content().length">No items.</p>
+<p data-bind="visible: mainViewModel.content().length">Items:</p>
 <div class='itemsview'>
-  <p data-bind="visible: !mainViewModel.content().length">No items.</p>
-  <p data-bind="visible: mainViewModel.content().length">Items:</p>
+
   <!-- ko foreach: mainViewModel.content -->
-    <span>
-      <p data-bind="enable: mainViewModel.loggedIn, text: name"></p> —
-      <p data-bind="enable: mainViewModel.loggedIn, text: catagory"></p>
-      <!-- <img data-bind='attr: { src: image_filename}' alt=""> -->
+    <span class='card' style="background-image: ">
+      <img data-bind="attr: { src: image_filename }">
+      <p id='name' data-bind="enable: mainViewModel.loggedIn, text: name"></p>
+      <p id='catagory' data-bind="enable: mainViewModel.loggedIn, text: catagory"></p>
     </span>
   <!-- /ko -->
 </div>

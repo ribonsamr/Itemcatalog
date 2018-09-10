@@ -13,9 +13,9 @@
     class="addButton"
     onclick="addModel.active(!addModel.active())">Add</button>
     <form data-bind="if: mainViewModel.loggedIn(), visible: addModel.active(), submit: addModel.submit">
-        <input data-bind="textInput: addModel.itemName" placeholder="Item name" required>
-        <input data-bind="textInput: addModel.itemCatagory" placeholder="Item catagory" required>
-        <!-- <input type='file' data-bind="attr: { src: addModel.itemFile }"> -->
+        <input data-bind="textInput: addModel.itemName" name='item_name' type="text" placeholder="Item name" required>
+        <input data-bind="textInput: addModel.itemCatagory" name='item_catagory' type="text" placeholder="Item catagory" required>
+        <input data-bind='value: addModel.itemFile' name='item_file' type="file">
         <button type='submit'>Commit</button>
 
         <!-- ViewModel:

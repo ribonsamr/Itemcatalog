@@ -36,6 +36,13 @@ def main():
 def items():
     return render_template('items.html')
 
+@app.route('/test', methods=['POST'])
+def test():
+    form = request.form
+    if 'file' in request.files:
+        print(request.files['file'])
+    return "OK"
+
 
 # @app.errorhandler(404)
 # def not_found(error):

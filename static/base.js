@@ -208,18 +208,33 @@ function addModel() {
   this.itemName = ko.observable();
   this.itemCatagory = ko.observable();
   this.itemFile = ko.observable();
+
   this.active = ko.observable(false);
-  this.submit = function () {
+
+  this.submit = function (formData) {
+    file = formData.elements.item_file;
+    name = self.itemName();
+    catagory = self.itemCatagory();
+
+    data = new FormData();
+    if (file.files[0]) {
+      data.append('file', file.files[0]);
+    }
+    data.append('name', name);
+    data.append('catagory', catagory);
+
     $.ajax({
-      type: 'POST',
+      type: "POST",
       url: '/add',
-      data: JSON.stringify(ko.toJSON(addModel, null, 2)),
-      contentType: 'application/json',
-      success: function(xhr, msg) {
+      data: data,
+      contentType: false,
+      processData: false,
+      cache: false,
+      success: function(data) {
         mainViewModel.refreshContent();
-        flash.print("Added.\n" + self.itemName() + ", of catagory: " + self.itemCatagory() + '.');
         self.itemName('');
         self.itemCatagory('');
+        self.itemFile('');
       },
       error: function(xhr, msg, error) {
         if (xhr.status === 400) {

@@ -20,10 +20,13 @@ def view_by_data(catagory, name):
 @items_manager.route("/add", methods=['POST'])
 @login_required
 def add():
-    j_data = json.loads(request.get_json())
+    item_name = request.form.get('name')
+    item_catagory = request.form.get('catagory')
+    item_file = ''
 
-    item_name = j_data['itemName']
-    item_catagory = j_data['itemCatagory']
+    if 'file' in request.files:
+        print(request.files['file'])
+        item_file = request.files['file']
 
     if not item_name or not item_catagory:
         return "Missing fields.", 405
@@ -33,6 +36,13 @@ def add():
 
     if query:
         return "Already exists", 405
+
+    if item_file:
+        filename = photos.save(item_file)
+        # return (filename, redirect(url_for('image_get', path=filename)))
+        db.session.add(Item(item_name, item_catagory, filename))
+        db.session.commit()
+        return "OK", 200
 
     db.session.add(Item(item_name, item_catagory, ''))
     db.session.commit()
@@ -86,18 +96,3 @@ def edit():
     db.session.commit()
 
     return "OK", 200
-
-def upload(request):
-    if 'file' not in request.files:
-        flash('No files attached.')
-        return False
-
-    file = request.files['file']
-
-    if file.filename == '':
-        flash('No selected file')
-        return False
-
-    if file:
-        filename = photos.save(file)
-        return (filename, redirect(url_for('image_get', path=filename)))

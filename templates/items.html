@@ -22,21 +22,28 @@
         <pre data-bind="text: ko.toJSON(addModel, null, 2)"></pre> -->
     </form>
   </div>
-  <p data-bind="visible: !mainViewModel.content().length">No items.</p>
+</div>
+
+<p data-bind="visible: !mainViewModel.content().length">No items.</p>
+
+<div class="flexview">
   <!-- ko foreach: mainViewModel.content -->
-    <span>
+  <div class="dataview">
+    <span id='image'>
+      <img data-bind="attr: { src: image_filename }">
+    </span>
+
+    <span id='data'>
       <input class='name' data-bind="enable: mainViewModel.loggedIn, textInput: name">
       <input class='catagory' data-bind="enable: mainViewModel.loggedIn, textInput: catagory">
-      <img style="height: 40px;"data-bind="attr: { src: image_filename }">
     </span>
 
     <span id='options' data-bind="visible: mainViewModel.loggedIn">
       <button data-bind='click: mainViewModel.remove' id='delete' type="button">Delete</button>
       <button data-bind='click: mainViewModel.edit' id='edit' type="button">Edit</button>
     </span>
-  <hr>
+  </div>
   <!-- /ko -->
-
 </div>
 
 {% endblock %}

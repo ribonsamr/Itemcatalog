@@ -7,8 +7,8 @@
 {% block content %}
 <p data-bind="visible: !mainViewModel.content().length">No items.</p>
 <p data-bind="visible: mainViewModel.content().length">Items:</p>
-<div class='itemsview'>
 
+<div class='itemsview'>
   <!-- ko foreach: mainViewModel.content -->
     <span class='card' style="background-image: ">
       <img data-bind="attr: { src: image_filename }">

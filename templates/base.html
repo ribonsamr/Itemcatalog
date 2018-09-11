@@ -63,9 +63,9 @@
     <pre data-bind="text: flash.msg"></pre>
   </header>
 
-  <div class="searchBar cardLook">
-    <input type="text" placeholder="Search">
-  </div>
+  <form class="searchBar cardLook" data-bind='submit: mainViewModel.search'>
+    <input data-bind="text: mainViewModel.searchInput" type="text" placeholder="Search">
+  </form>
 
   <div class="container cardLook">
     {% with messages = get_flashed_messages() %}

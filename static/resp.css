@@ -4,11 +4,6 @@
     display: grid;
   }
 
-  .g-signin2 > div {
-    width: 50%;
-    margin: auto;
-  }
-
   .container {
     min-height: 400px;
     display: grid;

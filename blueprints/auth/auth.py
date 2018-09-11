@@ -16,6 +16,7 @@ login_manager = LoginManager()
 
 login_manager.login_view = "auth.login"
 
+
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
@@ -77,7 +78,8 @@ def signup():
             else:
                 # All good, check the database
                 db_email = User.query.filter(User.email.ilike(email)).first()
-                db_username = User.query.filter(User.username.ilike(username)).first()
+                db_username = User.query.filter(
+                              User.username.ilike(username)).first()
 
                 if db_email:
                     return 'Email already exists.', 405
@@ -111,9 +113,11 @@ def gconnect():
     CLIENT_SECRET_FILE = 'config/csec.json'
 
     credentials = client.credentials_from_clientsecrets_and_code(
-    CLIENT_SECRET_FILE,
-    ['https://www.googleapis.com/auth/drive.appdata', 'profile', 'email'],
-    auth_code)
+                CLIENT_SECRET_FILE,
+                ['https://www.googleapis.com/auth/drive.appdata',
+                    'profile',
+                    'email'],
+                auth_code)
 
     # Get profile info from ID token
     email = credentials.id_token['email']

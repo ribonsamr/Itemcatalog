@@ -16,24 +16,24 @@ from models import db, User, Item
 app = Flask(__name__)
 
 # load flask config file
-app.config.from_pyfile  ('config/config.py')
+app.config.from_pyfile('config/config.py')
 
 # init SQLAlchemy
-db.init_app             (app)
+db.init_app(app)
 
 # init CSRFProtect
-csrf.init_app           (app)
+csrf.init_app(app)
 
 # init login_manager
-login_manager.init_app  (app)
+login_manager.init_app(app)
 
 # init flask_uploads
-configure_uploads       (app, (photos))
+configure_uploads(app, (photos))
 
 # register the blueprints [api, auth, items_manager]
-app.register_blueprint  (api)
-app.register_blueprint  (auth)
-app.register_blueprint  (items_manager)
+app.register_blueprint(api)
+app.register_blueprint(auth)
+app.register_blueprint(items_manager)
 
 
 @app.route('/')
@@ -75,7 +75,7 @@ def dated_url_for(endpoint, **values):
         filename = values.get('filename', None)
         if filename:
             file_path = os.path.join(app.root_path,
-                                 endpoint, filename)
+                                     endpoint, filename)
             values['q'] = int(os.stat(file_path).st_mtime)
     return url_for(endpoint, **values)
 # ========================================================

@@ -11,6 +11,7 @@ items_manager = Blueprint('/items', __name__)
 
 photos = UploadSet('photos', IMAGES)
 
+
 @items_manager.route('/<catagory>/<name>')
 def view_by_data(catagory, name):
     query = Item.query.filter(Item.name.ilike(name),
@@ -50,6 +51,7 @@ def add():
 
     return "OK", 200
 
+
 @items_manager.route('/image', methods=['POST'])
 def get_image():
     file_url = photos.url(request.values['filename'])
@@ -63,7 +65,7 @@ def delete():
 
     item_id = j_data['id']
 
-    query = Item.query.filter(Item.id==item_id)
+    query = Item.query.filter(Item.id == item_id)
 
     if not query:
         return "Not found", 404
@@ -74,11 +76,11 @@ def delete():
         file_path = photos.path(item.image_filename)
         os.remove(file_path)
 
-
     query.delete(synchronize_session=False)
     db.session.commit()
 
     return "OK", 200
+
 
 @items_manager.route('/edit', methods=['POST'])
 @login_required
@@ -89,7 +91,7 @@ def edit():
     item_name = j_data['name']
     item_catagory = j_data['catagory']
 
-    query = Item.query.filter(Item.id==item_id)
+    query = Item.query.filter(Item.id == item_id)
 
     if not query:
         return "Not found", 404

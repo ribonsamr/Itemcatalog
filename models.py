@@ -10,12 +10,11 @@ db = SQLAlchemy()
 class User(UserMixin, db.Model):
     __tablename__ = "users"
 
-    id        = db.Column(db.Integer, primary_key=True, nullable=False)
-    username  = db.Column(db.String, unique=True, nullable=False)
-    password  = db.Column(db.String)
-    email     = db.Column(db.String, unique=True, nullable=False)
-    google    = db.Column(db.Boolean, nullable=False)
-
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    username = db.Column(db.String, unique=True, nullable=False)
+    password = db.Column(db.String)
+    email = db.Column(db.String, unique=True, nullable=False)
+    google = db.Column(db.Boolean, nullable=False)
 
     def __init__(self, username, password, email, google):
         self.username = username
@@ -23,10 +22,8 @@ class User(UserMixin, db.Model):
         self.email = email
         self.google = google
 
-
     def __repr__(self):
         return '<User %r>' % self.username
-
 
     # return a JSON format of the user.
     @property
@@ -40,25 +37,21 @@ class User(UserMixin, db.Model):
         }
 
 
-
 class Item(db.Model):
     __tablename__ = "items"
 
-    id              = db.Column(db.Integer, primary_key=True, nullable=False)
-    name            = db.Column(db.String, nullable=False)
-    catagory        = db.Column(db.String, nullable=False)
-    image_filename  = db.Column(db.String)
-
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    name = db.Column(db.String, nullable=False)
+    catagory = db.Column(db.String, nullable=False)
+    image_filename = db.Column(db.String)
 
     def __init__(self, name, catagory, image_filename):
         self.name = name
         self.catagory = catagory
         self.image_filename = image_filename
 
-
     def __repr__(self):
         return '<Name %r>' % self.name
-
 
     # return a JSON format of the item.
     @property

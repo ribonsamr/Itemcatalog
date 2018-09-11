@@ -1,9 +1,11 @@
+// Main view model
 function mainViewModel() {
   this.loggedIn = ko.observable(false);
   this.content = ko.observableArray([]);
   this.searchInput = ko.observable('');
   this.searchResults = ko.observableArray([]);
 
+  // Navigation items that will change due to the login state
   this.navItems = [
   { title: ko.observable('Login'),
     url: ko.observable('/login'),
@@ -25,6 +27,7 @@ function mainViewModel() {
     visib: ko.pureComputed(function() { return this.loggedIn(); }, this),
   }
 
+  // POST a request to get all the users data in the db, and log the results.
   this.getUsers = function(func) {
     $.ajax({
       type: 'GET',
@@ -37,6 +40,7 @@ function mainViewModel() {
     });
   };
 
+  // Get all the items from the db, and execute a function with the result.
   this.getItems = function(func) {
     $.ajax({
       type: 'GET',
@@ -48,24 +52,30 @@ function mainViewModel() {
     });
   };
 
+  // Refresh the items content (mainViewModel.content) which is displayed
+  // across the main and the items pages.
   this.refreshContent = function() {
     let result = this.getItems(function(result) {
       mainViewModel.content([]);
       for (var i = 0; i < result.length; i++) {
         data = result[i];
         filename = data.image_filename;
+
+        // Check if the item has an image, and load it.
         if (!filename) {
           mainViewModel.content.push(data);
         } else {
-          console.log(data);
+          // console.log(data);
           $.ajax({
             type: 'POST',
             url: '/image',
             data: {filename: filename},
             success: function(result) {
               data.image_filename = result;
+
+              // update the content list
               mainViewModel.content.push(data);
-              console.log(data);
+              // console.log(data);
             }
           });
         }
@@ -73,6 +83,7 @@ function mainViewModel() {
     });
   };
 
+  // POST a request to edit a record
   this.edit = function(item) {
     $.ajax({
       type: 'POST',
@@ -80,6 +91,8 @@ function mainViewModel() {
       data: JSON.stringify(item),
       contentType: 'application/json',
       success: function(xhr, msg) {
+
+        // Refresh the content
         mainViewModel.refreshContent();
         flash.print("Edit done.\n" + item.name + ", of catagory: " + item.catagory + '.');
       },
@@ -100,6 +113,7 @@ function mainViewModel() {
     });
   }
 
+  // POST a request to delete an item
   this.remove = function(item) {
     $.ajax({
       type: 'POST',
@@ -127,15 +141,23 @@ function mainViewModel() {
     });
   }
 
+  // Search an item with a keyword.
   this.searchItem = function() {
     $.ajax({
       type: 'GET',
       url: '/search/' + mainViewModel.searchInput(),
       success: function(result) {
+
+        // inform the user with the number of matches found
         flash.print('Found ' + result.length + '.');
+
+        // empty the searchResults object
         mainViewModel.searchResults([]);
+
         for (var i = 0; i < result.length; i++) {
           data = result[i];
+
+          // Check if the item has an image linked to it, and load it.
           filename = data.image_filename;
           if (!filename) {
             mainViewModel.searchResults.push(data);
@@ -165,6 +187,7 @@ function mainViewModel() {
           flash.print(xhr.responseText);
         }
         if (xhr.status === 404) {
+          // If there are no results, the server returns 404.
           flash.print("No results.");
         }
       }
@@ -172,14 +195,16 @@ function mainViewModel() {
   }
 }
 
+// Login form model
 function formModel() {
   this.username = ko.observable("");
   this.email = ko.observable("");
   this.password = ko.observable("");
 }
 
-
+// Auth model
 function auth() {
+  // POST a request with JSON data to login a user
   this.login = function() {
     $.ajax({
       type: 'POST',
@@ -187,6 +212,7 @@ function auth() {
       data: JSON.stringify(ko.toJSON(formViewModel, null, 2)),
       contentType: 'application/json',
       success: function(xhr, msg) {
+        // If the response is OK, log him in.
         mainViewModel.loggedIn(true);
         window.location.href = '/';
       },
@@ -204,6 +230,7 @@ function auth() {
     });
   }
 
+  // A POST request to sign up a user
   this.submitData = function() {
     $.ajax({
       type: 'POST',
@@ -211,6 +238,7 @@ function auth() {
       data: JSON.stringify(ko.toJSON(formViewModel, null, 2)),
       contentType: 'application/json',
       success: function(xhr, msg) {
+        // If the respone is OK, log him in.
         mainViewModel.loggedIn(true);
         window.location.href = '/';
       },
@@ -228,6 +256,7 @@ function auth() {
     });
   }
 
+  // A POST request to logout a user.
   this.logout = function() {
     $.ajax({
       type: 'POST',
@@ -235,10 +264,13 @@ function auth() {
       processData: false,
       contentType: 'application/json',
       success: function(xhr, msg) {
+
+        // Get the google auth2 instance, and sign the user out.
         var auth2 = gapi.auth2.getAuthInstance();
         auth2.signOut().then(function () {
           console.log('User signed out.');
         });
+
         mainViewModel.loggedIn(false);
         window.location.href = '/';
       },
@@ -257,6 +289,7 @@ function auth() {
   }
 }
 
+// flash model to show temp messages to the user when he executes some tasks.
 function flash() {
   var self = this;
   this.msg = ko.observable();
@@ -265,6 +298,7 @@ function flash() {
   };
 }
 
+// A model to add new items
 function addModel() {
   var self = this;
   this.itemName = ko.observable();
@@ -282,6 +316,7 @@ function addModel() {
     if (file.files[0]) {
       data.append('file', file.files[0]);
     }
+
     data.append('name', name);
     data.append('catagory', catagory);
 
@@ -298,7 +333,6 @@ function addModel() {
         self.itemName('');
         self.itemCatagory('');
         self.itemFile('');
-
       },
       error: function(xhr, msg, error) {
         if (xhr.status === 400) {
@@ -318,6 +352,7 @@ function addModel() {
   }
 }
 
+// Combine all the views together
 var masterViewModel = (function() {
   this.mainViewModel = new mainViewModel();
   this.formViewModel = new formModel();
@@ -329,5 +364,7 @@ var masterViewModel = (function() {
 
 $(function() {
   ko.applyBindings(masterViewModel);
+  
+  // Get the current_user login state via main.py:line 86.
   mainViewModel.loggedIn(current_user_authed);
 });

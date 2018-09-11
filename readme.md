@@ -11,6 +11,8 @@ You can quickly install the website by running `./install.sh`, this will do all 
 
 ***Note**: the installation file uses `pip3` to install the packages, absence of `pip3` will cause errors.*
 
+A dumped copy of my sample database exists as `itemcatag_db`, If it wasn't loaded during the installation process, it can be restored using this command: `psql itemcatag_db < itemcatag_db` ([psql_dump](https://www.postgresql.org/docs/9.1/static/backup-dump.html)).
+
 Manual install steps are included in the end of this file.
 
 ## Project specifications
@@ -42,3 +44,18 @@ There are two tables, `Users` and `Items`. Each one of them has a property to re
 
 ### HTTPS:
 I tried to achieve HTTPS, at `/config/`, the certification and the key can be found. At the end of `main.py`, you can uncomment a line that will launch the website using HTTPS instead of HTTP. And accessing it via `https://localhost:5000`.
+
+## Manual Installation
+### Install required packages:
+`pip3 install --upgrade flask flask-migrate flask-script flask-sqlalchemy flask-wtf psycopg2-binary flask-login flask-uploads google-auth requests oauth2client google-api-python-client`
+
+### Create the database:
+`psql -c 'create database itemcatag_db'`
+
+### Run migrations:
+- `python3 manage.py db init`
+- `python3 manage.py db migrate`
+- `python3 manage.py db upgrade`
+
+### (Optional) Load the sample database:
+`psql itemcatag_db < itemcatag_db`

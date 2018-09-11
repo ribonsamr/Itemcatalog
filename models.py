@@ -3,7 +3,7 @@ from flask import url_for
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# Init empty SQLAlchemy instance, will init the app later.
+# init a SQLAlchemy instance, will init the app later in the main.py file.
 db = SQLAlchemy()
 
 
@@ -13,8 +13,8 @@ class User(UserMixin, db.Model):
     id        = db.Column(db.Integer, primary_key=True, nullable=False)
     username  = db.Column(db.String, unique=True, nullable=False)
     password  = db.Column(db.String)
-    email     = db.Column(db.String, unique=True)
-    google    = db.Column(db.Boolean)
+    email     = db.Column(db.String, unique=True, nullable=False)
+    google    = db.Column(db.Boolean, nullable=False)
 
 
     def __init__(self, username, password, email, google):
@@ -28,6 +28,7 @@ class User(UserMixin, db.Model):
         return '<User %r>' % self.username
 
 
+    # return a JSON format of the user.
     @property
     def serialize(self):
         return {
@@ -39,13 +40,14 @@ class User(UserMixin, db.Model):
         }
 
 
+
 class Item(db.Model):
     __tablename__ = "items"
 
     id              = db.Column(db.Integer, primary_key=True, nullable=False)
     name            = db.Column(db.String, nullable=False)
     catagory        = db.Column(db.String, nullable=False)
-    image_filename  = db.Column(db.String())
+    image_filename  = db.Column(db.String
 
 
     def __init__(self, name, catagory, image_filename):
@@ -58,6 +60,7 @@ class Item(db.Model):
         return '<Name %r>' % self.name
 
 
+    # return a JSON format of the item.
     @property
     def serialize(self):
         return {

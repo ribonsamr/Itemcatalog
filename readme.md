@@ -7,6 +7,8 @@ Config file can be found at `/config/config.py`.
 ## Installation
 You can quickly install the website by running `./install.sh`, this will do all the work needed to run the website. Then you can run the website: `python3 main.py`
 
+You can pass an argument to the installation file to silent warnings and errors: `./install.sh -s`.
+
 ***Note**: Python 3.6 is recommended, also the latest versions of the required packages is recommended.*
 
 ***Note**: the installation file uses `pip3` to install the packages, absence of `pip3` will cause errors.*

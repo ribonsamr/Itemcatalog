@@ -1,4 +1,5 @@
 @media screen and (min-width: 767px) {
+
   .container {
     display: grid;
   }
@@ -31,9 +32,11 @@
     display: inline-block;
     margin: auto;
   }
+
   .addView {
     width: 80%;
   }
+
   .addView button {
     width: 20%;
   }
@@ -42,5 +45,4 @@
     margin: auto;
     width: 50%;
   }
-
 }

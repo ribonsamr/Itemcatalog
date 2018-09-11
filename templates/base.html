@@ -61,10 +61,13 @@
     </nav>
 
     <pre data-bind="text: flash.msg"></pre>
-
   </header>
 
-  <div class="container">
+  <div class="searchBar cardLook">
+    <input type="text" placeholder="Search">
+  </div>
+
+  <div class="container cardLook">
     {% with messages = get_flashed_messages() %}
       {% if messages %}
         {% for message in messages %}
@@ -76,7 +79,7 @@
   </div>
 
   <footer>
-    <p>Designed by Amr.</p>
+    <p>Designed by <a href='https://ribonsamr.github.io' target="_blank">Amr</a>.</p>
   </footer>
 
   {% block scripts %}{% endblock %}

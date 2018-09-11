@@ -9,13 +9,13 @@ You can quickly install the website by running `./install.sh`, this will do all 
 
 You can pass an argument to the installation file to silent warnings and errors: `./install.sh -s`.
 
-***Note**: Python 3.6 is recommended, also the latest versions of the required packages is recommended.*
+***Note**: Python 3.6 is recommended, also the latest versions of the required packages are recommended.*
 
 ***Note**: the installation file uses `pip3` to install the packages, absence of `pip3` will cause errors.*
 
-A dumped copy of my sample database exists as `itemcatag_db`, If it wasn't loaded during the installation process, it can be restored using this command: `psql itemcatag_db < itemcatag_db` ([psql_dump](https://www.postgresql.org/docs/9.1/static/backup-dump.html)).
+A dumped copy of the sample database exists as `itemcatag_db`, If it wasn't loaded during the installation process, it can be restored using this command: `psql itemcatag_db < itemcatag_db` ([psql_dump](https://www.postgresql.org/docs/9.1/static/backup-dump.html)).
 
-Manual install steps are included in the end of this file.
+Manual install steps are included at the end of this file.
 
 ## Project specifications
 

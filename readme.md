@@ -7,9 +7,13 @@ Config file can be found at `/config/config.py`.
 ## Installation
 You can quickly install the website by running `./install.sh`, this will do all the work needed to run the website. Then you can run the website: `python3 main.py`
 
+You can pass an argument to the installation file to silent warnings and errors: `./install.sh -s`.
+
 ***Note**: Python 3.6 is recommended, also the latest versions of the required packages is recommended.*
 
 ***Note**: the installation file uses `pip3` to install the packages, absence of `pip3` will cause errors.*
+
+A dumped copy of my sample database exists as `itemcatag_db`, If it wasn't loaded during the installation process, it can be restored using this command: `psql itemcatag_db < itemcatag_db` ([psql_dump](https://www.postgresql.org/docs/9.1/static/backup-dump.html)).
 
 Manual install steps are included in the end of this file.
 
@@ -42,3 +46,18 @@ There are two tables, `Users` and `Items`. Each one of them has a property to re
 
 ### HTTPS:
 I tried to achieve HTTPS, at `/config/`, the certification and the key can be found. At the end of `main.py`, you can uncomment a line that will launch the website using HTTPS instead of HTTP. And accessing it via `https://localhost:5000`.
+
+## Manual Installation
+### Install required packages:
+`pip3 install --upgrade flask flask-migrate flask-script flask-sqlalchemy flask-wtf psycopg2-binary flask-login flask-uploads google-auth requests oauth2client google-api-python-client`
+
+### Create the database:
+`psql -c 'create database itemcatag_db'`
+
+### Run migrations:
+- `python3 manage.py db init`
+- `python3 manage.py db migrate`
+- `python3 manage.py db upgrade`
+
+### (Optional) Load the sample database:
+`psql itemcatag_db < itemcatag_db`

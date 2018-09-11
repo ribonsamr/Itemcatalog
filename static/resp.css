@@ -42,14 +42,15 @@
   }
 
   .card {
-    margin: calc(100%/32);
-    max-width: 160px;
+    height: 200px;
+    width: 170px;
+    max-width: 170px;
   }
 
 }
 
 @media screen and (min-width: 600px) {
   .card {
-    margin: calc(100%/40);
+    margin: calc(100%/32);
   }
 }

@@ -91,7 +91,7 @@ function mainViewModel() {
           window.location.href = xhr.responseText;
         }
         if (xhr.status === 405) {
-          alert(xhr.responseText)
+          flash.print(xhr.responseText)
         }
       }
     });
@@ -118,7 +118,7 @@ function mainViewModel() {
           window.location.href = xhr.responseText;
         }
         if (xhr.status === 405) {
-          alert(xhr.responseText)
+          flash.print(xhr.responseText)
         }
       }
     });
@@ -151,7 +151,7 @@ function auth() {
           window.location.href = xhr.responseText;
         }
         if (xhr.status === 405) {
-          alert(xhr.responseText)
+          flash.print(xhr.responseText)
         }
       }
     });
@@ -175,7 +175,7 @@ function auth() {
           window.location.href = xhr.responseText;
         }
         if (xhr.status === 405) {
-          alert(xhr.responseText)
+          flash.print(xhr.responseText)
         }
       }
     });
@@ -203,7 +203,7 @@ function auth() {
           window.location.href = xhr.responseText;
         }
         if (xhr.status === 405) {
-          alert(xhr.responseText)
+          flash.print(xhr.responseText)
         }
       }
     });
@@ -264,7 +264,7 @@ function addModel() {
           window.location.href = xhr.responseText;
         }
         if (xhr.status === 405) {
-          alert(xhr.responseText)
+          flash.print(xhr.responseText)
         }
       }
     });

@@ -1,8 +1,11 @@
 # Item Catalog Project
 The project uses [KnockoutJS](https://knockoutjs.com) library to handle the front-end at `static/base.js`. Ajax is used to handle requests with the Flask back-end.
 
+## Config
+Config file can be found at `/config/config.py`.
+
 ## Installation
-You can quickly install the website by running `./install.sh`, this install file will do all the work needed to run this website. Then you can run the website: `python3 main.py`
+You can quickly install the website by running `./install.sh`, this will do all the work needed to run the website. Then you can run the website: `python3 main.py`
 
 ***Note**: Python 3.6 is recommended, also the latest versions of the required packages is recommended.*
 
@@ -35,4 +38,7 @@ There are two tables, `Users` and `Items`. Each one of them has a property to re
 ### Authentication & Authorization:
 - `/blueprints/auth/auth.py` - [Flask-Login](https://flask-login.readthedocs.io/en/latest/) is used to handle users login and logout operations.
 - `main.py` - Line 86, the user login state always passed to KnockoutJS to determine when to allow certain views to load and when not. And the login state is used to set an observable value inside the KO `mainViewModel`.
-- `/blueprints/auth/auth.py` @ `/gconnect` route & at `/templates/base.html`, `/templates/login.html` - [Google Sign-in button](https://developers.google.com/identity/sign-in/web/server-side-flow) is used to login and register users. Login and Logout buttons are provided to the user using KnockoutJS. 
+- `/blueprints/auth/auth.py` @ `/gconnect` route & at `/templates/base.html`, `/templates/login.html` - [Google Sign-in button](https://developers.google.com/identity/sign-in/web/server-side-flow) is used to login and register users. Login and Logout buttons are provided to the user using KnockoutJS.
+
+### HTTPS:
+I tried to achieve HTTPS, at `/config/`, the certification and the key can be found. At the end of `main.py`, you can uncomment a line that will launch the website using HTTPS instead of HTTP. And accessing it via `https://localhost:5000`.

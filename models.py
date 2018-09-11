@@ -47,7 +47,7 @@ class Item(db.Model):
     id              = db.Column(db.Integer, primary_key=True, nullable=False)
     name            = db.Column(db.String, nullable=False)
     catagory        = db.Column(db.String, nullable=False)
-    image_filename  = db.Column(db.String
+    image_filename  = db.Column(db.String)
 
 
     def __init__(self, name, catagory, image_filename):

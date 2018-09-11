@@ -1,15 +1,13 @@
+import json
+
 from flask import Blueprint, request, url_for, redirect, render_template, flash
 from flask_wtf.csrf import CSRFProtect
 from flask_login import current_user, login_user, logout_user, LoginManager, \
                         login_required
 from werkzeug.security import generate_password_hash, check_password_hash
-from apiclient import discovery
-import httplib2
 from oauth2client import client
 
 from models import db, User
-
-import json
 
 auth = Blueprint('auth', __name__)
 

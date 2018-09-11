@@ -6,11 +6,12 @@ from flask_wtf.csrf import CSRFProtect
 from flask_uploads import configure_uploads
 from flask_login import current_user
 
-from models import db, User, Item
-
 from blueprints.api.api import api
 from blueprints.auth.auth import auth, csrf, login_manager
 from blueprints.items.items_manager import items_manager, photos
+
+from models import db, User, Item
+
 
 app = Flask(__name__)
 

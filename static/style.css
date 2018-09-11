@@ -224,6 +224,7 @@ button:hover, button:focus {
 }
 
 .card {
+  max-width: 160px;
   display: grid;
   grid-template-rows: 50% 25% 25%;
   border-radius: 5px;
@@ -242,8 +243,6 @@ button:hover, button:focus {
   height: auto;
   display: block;
   margin: auto;
-  margin-top: 5px;
-  margin-bottom: 5px;
 }
 
 .card p {

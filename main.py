@@ -48,7 +48,7 @@ def items():
     return render_template('items.html')
 
 
-# for testing purposes
+# For testing purposes
 # @app.route('/test', methods=['POST'])
 # def test():
 #     form = request.form
@@ -57,6 +57,7 @@ def items():
 #     return "OK"
 
 
+# Handling 404 error globally
 # @app.errorhandler(404)
 # def not_found(error):
 #     return render_template('error.html'), 404
@@ -79,7 +80,8 @@ def dated_url_for(endpoint, **values):
     return url_for(endpoint, **values)
 # ========================================================
 
-# pass the current_user authentication state always to
+
+# Pass the current_user authentication state always to
 # the front-end (Knockout.JS)
 @app.context_processor
 def current_user_authed():

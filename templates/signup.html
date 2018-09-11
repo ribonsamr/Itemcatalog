@@ -3,7 +3,7 @@
 {% block content %}
 <div class="loginView">
   <form data-bind="submit: auth.submitData">
-    <input data-bind="textInput: formViewModel.username" placeholder="Username" required>
+    <input data-bind="textInput: formViewModel.username" placeholder="Username" required autofocus>
     <input data-bind="textInput: formViewModel.email" placeholder="Email" type="email" pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" required>
     <input data-bind="textInput: formViewModel.password" placeholder="Password" type="password" required>
 

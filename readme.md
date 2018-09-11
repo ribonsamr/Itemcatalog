@@ -37,7 +37,7 @@ There are two tables, `Users` and `Items`. Each one of them has a property to re
 
 ### Authentication & Authorization:
 - `/blueprints/auth/auth.py` - [Flask-Login](https://flask-login.readthedocs.io/en/latest/) is used to handle users login and logout operations.
-- `main.py` - Line 86, the user login state always passed to KnockoutJS to determine when to allow certain views to load and when not. And the login state is used to set an observable value inside the KO `mainViewModel`.
+- `main.py` - Line 86, the user login state always passed to KnockoutJS to determine when to allow certain views to load and when not. And the login state is used to set an observable value inside the KO ViewModel `mainViewModel`.
 - `/blueprints/auth/auth.py` @ `/gconnect` route & at `/templates/base.html`, `/templates/login.html` - [Google Sign-in button](https://developers.google.com/identity/sign-in/web/server-side-flow) is used to login and register users. Login and Logout buttons are provided to the user using KnockoutJS.
 
 ### HTTPS:

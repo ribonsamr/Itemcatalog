@@ -1,6 +1,7 @@
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 
+# import from main.py the flask app, and the models.py's db (SQLAlchemy)
 from main import app, db
 
 migrate = Migrate(app, db)

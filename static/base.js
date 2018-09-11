@@ -6,18 +6,19 @@ function mainViewModel() {
 
   this.navItems = [
   { title: ko.observable('Login'),
-  url: ko.observable('/login'),
-  visib: ko.pureComputed(function() { return !this.loggedIn(); }, this)},
+    url: ko.observable('/login'),
+    visib: ko.pureComputed(function() { return !this.loggedIn(); }, this)},
 
   { title: ko.observable('Signup'),
-  url: ko.observable('/signup'),
-  visib: ko.pureComputed(function() { return !this.loggedIn(); }, this)}];
+    url: ko.observable('/signup'),
+    visib: ko.pureComputed(function() { return !this.loggedIn(); }, this)}];
 
-  this.usersNav = {title: ko.observable('Users'),
-  url: ko.observable('/users'),
-  visib: ko.pureComputed(function() {
-    return this.loggedIn();
-  }, this)};
+  this.usersNav = {
+    title: ko.observable('Users'),
+    url: ko.observable('/users'),
+    visib: ko.pureComputed(function() {
+      return this.loggedIn();
+    }, this)};
 
   this.logoutButton = {
     title: ko.observable('Logout'),

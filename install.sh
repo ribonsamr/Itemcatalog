@@ -78,5 +78,14 @@ else
   migrate
 fi
 
+printf "\nDo you want to load the sample database? (y/n): "
+read answer
+if [[ "${answer,,}" = 'y' ]]; then
+  psql itemcatag_db < itemcatag_db
+else
+  echo -e "\nThe sample database wasn't loaded. You still can load it using this command:\n\"psql itemcatag_db < itemcatag_db\""
+fi
+
+
 echo -e "\nInstall finished."
 echo "You can now run the website using this command: python3 main.py"

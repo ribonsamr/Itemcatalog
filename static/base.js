@@ -1,6 +1,8 @@
 function mainViewModel() {
   this.loggedIn = ko.observable(false);
   this.content = ko.observableArray([]);
+  this.searchInput = ko.observable('');
+  this.searchResults = ko.observableArray([]);
 
   this.navItems = [
   { title: ko.observable('Login'),
@@ -119,6 +121,50 @@ function mainViewModel() {
         }
         if (xhr.status === 405) {
           flash.print(xhr.responseText)
+        }
+      }
+    });
+  }
+
+  this.searchItem = function() {
+    $.ajax({
+      type: 'GET',
+      url: '/search/' + mainViewModel.searchInput(),
+      success: function(result) {
+        flash.print('Found ' + result.length + '.');
+        mainViewModel.searchResults([]);
+        for (var i = 0; i < result.length; i++) {
+          data = result[i];
+          filename = data.image_filename;
+          if (!filename) {
+            mainViewModel.searchResults.push(data);
+          } else {
+            console.log(data);
+            $.ajax({
+              type: 'POST',
+              url: '/image',
+              data: {filename: filename},
+              success: function(result) {
+                data.image_filename = result;
+                mainViewModel.searchResults.push(data);
+                console.log(data);
+              }
+            });
+          }
+        }
+      },
+      error: function(xhr, msg, error) {
+        if (xhr.status === 400) {
+          location.reload();
+        }
+        if (xhr.status === 302) {
+          window.location.href = xhr.responseText;
+        }
+        if (xhr.status === 405) {
+          flash.print(xhr.responseText);
+        }
+        if (xhr.status === 404) {
+          flash.print("No results.");
         }
       }
     });

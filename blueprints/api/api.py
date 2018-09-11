@@ -13,9 +13,13 @@ def api_catag_view(name):
 
 
 # Items hold the name: <name>
+@api.route('/search/<name>')
 @api.route("/api/item/<name>")
 def api_item_view(name):
     query = Item.query.filter(Item.name.ilike(name)).all()
+    if not query:
+        return "Not found", 404
+
     return jsonify([i.serialize for i in query])
 
 

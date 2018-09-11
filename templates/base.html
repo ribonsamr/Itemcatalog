@@ -63,10 +63,20 @@
     <pre data-bind="text: flash.msg"></pre>
   </header>
 
-  <form class="searchBar cardLook">
-    <input type="text" placeholder="Search">
+  <form data-bind="submit: mainViewModel.searchItem" class="searchBar cardLook">
+    <input data-bind="textInput: mainViewModel.searchInput" type="text" placeholder="Search">
+    <input type="submit" style="visibility: hidden;" />
   </form>
 
+  <div class="cardLook flexview search-results" data-bind="visible: mainViewModel.searchResults().length > 0">
+    <!-- ko foreach: mainViewModel.searchResults -->
+      <span class='card' style="background-image: ">
+        <img data-bind="attr: { src: image_filename }">
+        <p id='name' data-bind="text: name"></p>
+        <p id='catagory' data-bind="text: catagory"></p>
+      </span>
+    <!-- /ko -->
+  </div>
   <div class="container cardLook">
     {% with messages = get_flashed_messages() %}
       {% if messages %}

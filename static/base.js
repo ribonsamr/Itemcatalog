@@ -107,7 +107,7 @@ function mainViewModel() {
       success: function(xhr, msg) {
 
         // Refresh the content
-        mainViewModel.refreshContent();
+        mainViewModel.refreshContent(true);
         flash.print("Edit done.\n" + item.name + ", of catagory: " + item.catagory + '.');
       },
       error: function(xhr, msg, error) {
@@ -135,7 +135,7 @@ function mainViewModel() {
       data: JSON.stringify(item),
       contentType: 'application/json',
       success: function(xhr, msg) {
-        mainViewModel.refreshContent();
+        mainViewModel.refreshContent(true);
         flash.print("Removed item: " + item.name + ", of catagory: " + item.catagory + '.');
       },
       error: function(xhr, msg, error) {
@@ -342,7 +342,7 @@ function addModel() {
       processData: false,
       cache: false,
       success: function(data) {
-        mainViewModel.refreshContent();
+        mainViewModel.refreshContent(true);
         flash.print('Added item: ' + name + ', of catagory: ' + catagory + '.');
         self.itemName('');
         self.itemCatagory('');

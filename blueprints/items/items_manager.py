@@ -82,6 +82,11 @@ def delete():
 
     item = query.first()
 
+    user_id = item.user_id
+    print(user_id, current_user.get_id())
+    if user_id != current_user.get_id():
+        return "Not allowed for you.", 405
+
     # check if the item has an image linked to it, then delete it.
     if item.image_filename:
         file_path = photos.path(item.image_filename)
@@ -113,6 +118,11 @@ def edit():
 
     # modify the record and commit it.
     query = query.first()
+
+    user_id = query.user_id
+    if user_id != int(current_user.get_id()):
+        return "Not allowed for you.", 405
+
     query.name = item_name
     query.catagory = item_catagory
     db.session.commit()

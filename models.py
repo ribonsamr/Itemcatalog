@@ -90,5 +90,5 @@ class Catagory(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'items': self.items,
+            'items': [i.serialize for i in self.items],
         }

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block head %}
 <script type="text/javascript">
-  mainViewModel.refreshContent();
+  mainViewModel.refreshContent(true);
 
   function showAddForm() {
     addModel.active(!addModel.active());

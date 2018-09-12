@@ -46,11 +46,4 @@
     width: 170px;
     max-width: 170px;
   }
-
-}
-
-@media screen and (min-width: 600px) {
-  .card {
-    margin: calc(100%/32);
-  }
 }

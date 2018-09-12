@@ -85,7 +85,8 @@ def dated_url_for(endpoint, **values):
 # the front-end (Knockout.JS)
 @app.context_processor
 def current_user_authed():
-    return dict(current_user_authed=str(current_user.is_authenticated).lower())
+    return dict(current_user_authed=str(current_user.is_authenticated).lower(),
+                current_user_id=current_user.get_id() or 'null')
 
 
 if __name__ == '__main__':

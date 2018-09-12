@@ -1,6 +1,7 @@
 // Main view model
 function mainViewModel() {
   this.loggedIn = ko.observable(false);
+  this.userID = ko.observable();
   this.content = ko.observableArray([]);
   this.searchInput = ko.observable('');
   this.searchResults = ko.observableArray([]);
@@ -54,11 +55,24 @@ function mainViewModel() {
 
   // Refresh the items content (mainViewModel.content) which is displayed
   // across the main and the items pages.
-  this.refreshContent = function() {
+  //
+  // Passing true to this function will filter the items to their user_id
+  this.refreshContent = function(strict) {
+    mainViewModel.userID(current_user_id);
+
     let result = this.getItems(function(result) {
       mainViewModel.content([]);
       for (var i = 0; i < result.length; i++) {
         data = result[i];
+
+        // check if the item belong to this user or not
+        if (strict) {
+          user_id = data.user_id;
+          if (user_id != mainViewModel.userID()) {
+            continue;
+          }
+        }
+
         filename = data.image_filename;
 
         // Check if the item has an image, and load it.
@@ -364,7 +378,8 @@ var masterViewModel = (function() {
 
 $(function() {
   ko.applyBindings(masterViewModel);
-  
+
   // Get the current_user login state via main.py:line 86.
   mainViewModel.loggedIn(current_user_authed);
+  mainViewModel.userID(current_user_id);
 });

@@ -3,7 +3,7 @@ import json
 
 from flask import Blueprint, request
 from flask_uploads import UploadSet, IMAGES, configure_uploads
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from models import Item, db
 
@@ -48,12 +48,12 @@ def add():
     # if a file was included, save it and link it to the item in the db.
     if item_file:
         filename = photos.save(item_file)
-        db.session.add(Item(item_name, item_catagory, filename))
+        db.session.add(Item(item_name, item_catagory, filename, current_user.id))
         db.session.commit()
         return "OK", 200
 
     # add the item to the db
-    db.session.add(Item(item_name, item_catagory, ''))
+    db.session.add(Item(item_name, item_catagory, '', current_user.id))
     db.session.commit()
 
     return "OK", 200

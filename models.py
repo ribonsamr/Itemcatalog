@@ -15,6 +15,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String)
     email = db.Column(db.String, unique=True, nullable=False)
     google = db.Column(db.Boolean, nullable=False)
+    items = db.relationship('Item', backref='users', lazy=True)
 
     def __init__(self, username, password, email, google):
         self.username = username
@@ -33,7 +34,8 @@ class User(UserMixin, db.Model):
             'username': self.username,
             'password': self.password,
             'email': self.email,
-            'google account': self.google
+            'google account': self.google,
+            'items': [i.serialize for i in self.items]
         }
 
 
@@ -44,11 +46,14 @@ class Item(db.Model):
     name = db.Column(db.String, nullable=False)
     catagory = db.Column(db.String, nullable=False)
     image_filename = db.Column(db.String)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'),
+        nullable=False)
 
-    def __init__(self, name, catagory, image_filename):
+    def __init__(self, name, catagory, image_filename, user_id):
         self.name = name
         self.catagory = catagory
         self.image_filename = image_filename
+        self.user_id = user_id
 
     def __repr__(self):
         return '<Name %r>' % self.name
@@ -60,5 +65,29 @@ class Item(db.Model):
             'id': self.id,
             'name': self.name,
             'catagory': self.catagory,
-            'image_filename': self.image_filename
+            'image_filename': self.image_filename,
+            'user_id': self.user_id
+        }
+
+class Catagory(db.Model):
+    __tablename__ = "catagories"
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    name = db.Column(db.String, nullable=False)
+    item_name = db.Column(db.String, nullable=False)
+
+    def __init__(self, name, item_name):
+        self.name = name
+        self.item_name = item_name
+
+    def __repr__(self):
+        return '<Name %r' % self.name
+
+    # return a JSON format of the item.
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'item name': self.item_name,
         }

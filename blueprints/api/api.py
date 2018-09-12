@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from models import User, Item, db
+from models import User, Item, Catagory, db
 from flask_login import login_required
 
 api = Blueprint('api', __name__)
@@ -40,12 +40,8 @@ def api_view_items_all():
 # All the catagories in the database
 @api.route("/api/catagories")
 def api_view_catagories_all():
-    query = db.session.query(Item.catagory)
-    results = query.group_by(Item.catagory).all()
-
-    catagories = [i[0] for i in results]
-
-    return jsonify(catagories)
+    query = Catagory.query.all()
+    return jsonify([i.serialize for i in query])
 
 
 # All the users in the database

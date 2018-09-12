@@ -83,8 +83,7 @@ def delete():
     item = query.first()
 
     user_id = item.user_id
-    print(user_id, current_user.get_id())
-    if user_id != current_user.get_id():
+    if user_id != int(current_user.get_id()):
         return "Not allowed for you.", 405
 
     # check if the item has an image linked to it, then delete it.

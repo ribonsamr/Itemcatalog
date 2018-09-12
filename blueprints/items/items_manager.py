@@ -5,7 +5,7 @@ from flask import Blueprint, request
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 from flask_login import login_required, current_user
 
-from models import Item, db
+from models import Item, Catagory, db
 
 items_manager = Blueprint('/items', __name__)
 
@@ -18,6 +18,12 @@ photos = UploadSet('photos', IMAGES)
 #     query = Item.query.filter(Item.name.ilike(name),
 #                               Item.catagory.ilike(catagory)).first()
 #     return render_template('view.html', query=query)
+
+def check_catagory(name):
+    query = Catagory.query.filter(Catagory.name.ilike(name))
+    if not query.first():
+        db.session.add(Catagory(name))
+        db.session.commit()
 
 
 # A POST request will parse form data to add a new item.
@@ -38,6 +44,7 @@ def add():
     if not item_name or not item_catagory:
         return "Missing fields.", 405
 
+    check_catagory(item_catagory)
     query = Item.query.filter(Item.name.ilike(item_name),
                               Item.catagory.ilike(item_catagory)).first()
 
@@ -111,6 +118,8 @@ def edit():
     # use the id to find the item in the db
     query = Item.query.filter(Item.id == item_id)
 
+    check_catagory(item_catagory)
+    
     # if the item doesn't exists, block the request
     if not query:
         return "Not found", 404

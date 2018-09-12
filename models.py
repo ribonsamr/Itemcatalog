@@ -44,7 +44,9 @@ class Item(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     name = db.Column(db.String, nullable=False)
-    catagory = db.Column(db.String, nullable=False)
+    # catagory = db.Column(db.String, nullable=False)
+    catagory = db.Column(db.String, db.ForeignKey('catagories.name'),
+        nullable=False)
     image_filename = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'),
         nullable=False)
@@ -73,12 +75,11 @@ class Catagory(db.Model):
     __tablename__ = "catagories"
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    name = db.Column(db.String, nullable=False)
-    item_name = db.Column(db.String, nullable=False)
+    name = db.Column(db.String, unique=True, nullable=False)
+    items = db.relationship('Item', backref='catagories', lazy=True)
 
-    def __init__(self, name, item_name):
+    def __init__(self, name):
         self.name = name
-        self.item_name = item_name
 
     def __repr__(self):
         return '<Name %r' % self.name
@@ -89,5 +90,5 @@ class Catagory(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'item name': self.item_name,
+            'items': self.items,
         }

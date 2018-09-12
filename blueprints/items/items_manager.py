@@ -13,12 +13,7 @@ items_manager = Blueprint('/items', __name__)
 photos = UploadSet('photos', IMAGES)
 
 
-# @items_manager.route('/<catagory>/<name>')
-# def view_by_data(catagory, name):
-#     query = Item.query.filter(Item.name.ilike(name),
-#                               Item.catagory.ilike(catagory)).first()
-#     return render_template('view.html', query=query)
-
+# check if there is a catagory by this name, otherwise, create a new one.
 def check_catagory(name):
     query = Catagory.query.filter(Catagory.name.ilike(name))
     if not query.first():
@@ -119,7 +114,7 @@ def edit():
     query = Item.query.filter(Item.id == item_id)
 
     check_catagory(item_catagory)
-    
+
     # if the item doesn't exists, block the request
     if not query:
         return "Not found", 404

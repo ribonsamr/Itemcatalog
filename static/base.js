@@ -32,7 +32,7 @@ function mainViewModel() {
   this.getUsers = function(func) {
     $.ajax({
       type: 'GET',
-      url: '/api/users',
+      url: '/api/v1/users',
       dataType: 'json',
       success: function(result) {
         console.log((result));
@@ -45,7 +45,7 @@ function mainViewModel() {
   this.getItems = function(func) {
     $.ajax({
       type: 'GET',
-      url: '/api/items',
+      url: '/api/v1/items',
       dataType: 'json',
       success: function(result) {
         func(result);

@@ -20,15 +20,15 @@ Manual install steps are included at the end of this file.
 ## Project specifications
 
 ### API endpoints:
-Can be found at `/blueprints/api/api.py`.
+Can be found at `/blueprints/api/v1/api.py`.
 
 List of available api endpoints:
-- `/api/catagory/<name>` - Get items by name.
-- `/search/<name>` or `/api/item/<name>` - Search for items using a keyword.
-- `/api/item/<id>` - Get item by id.
-- `/api/items` - Get all the items.
-- `/api/catagories` - Get all the catagories.
-- `/api/users` - Get all the users. Login required. Results are shown in the browser's console.
+- `/api/v1/catagory/<name>` - Get items by name.
+- `/search/<name>` or `/api/v1/item/<name>` - Search for items using a keyword.
+- `/api/v1/item/<id>` - Get item by id.
+- `/api/v1/items` - Get all the items.
+- `/api/v1/catagories` - Get all the catagories.
+- `/api/v1/users` - Get all the users. Login required. Results are shown in the browser's console.
 
 ### CRUD:
 The website database is called: `itemcatag_db`. Automatically, the installation file will create the database and do the migrations to it.

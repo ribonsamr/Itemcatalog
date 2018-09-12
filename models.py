@@ -46,10 +46,10 @@ class Item(db.Model):
     name = db.Column(db.String, nullable=False)
     # catagory = db.Column(db.String, nullable=False)
     catagory = db.Column(db.String, db.ForeignKey('catagories.name'),
-        nullable=False)
+                         nullable=False)
     image_filename = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'),
-        nullable=False)
+                        nullable=False)
 
     def __init__(self, name, catagory, image_filename, user_id):
         self.name = name
@@ -70,6 +70,7 @@ class Item(db.Model):
             'image_filename': self.image_filename,
             'user_id': self.user_id
         }
+
 
 class Catagory(db.Model):
     __tablename__ = "catagories"

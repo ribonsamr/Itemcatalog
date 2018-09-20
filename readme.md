@@ -5,8 +5,6 @@ The project uses [KnockoutJS](https://knockoutjs.com) library to handle the fron
 Config file can be found at `/config/config.py`.
 
 ## Installation
-You can access the virtual env for this project from: `source catalog-env/bin/activate`
-
 You can quickly install the website by running `./install.sh`, this will do all the work needed to run the website. Then you can run the website: `python3 main.py`
 
 You can pass an argument to the installation file to silent warnings and errors: `./install.sh -s`.

@@ -49,7 +49,7 @@ I tried to achieve HTTPS, at `/config/`, the certification and the key can be fo
 
 ## Manual Installation
 ### Install required packages:
-`pip3 install --upgrade flask flask-migrate flask-script flask-sqlalchemy flask-wtf psycopg2-binary flask-login flask-uploads google-auth requests oauth2client google-api-python-client`
+`pip3 install --upgrade -r requirements.txt`
 
 ### Create the database:
 `psql -c 'create database itemcatag_db'`

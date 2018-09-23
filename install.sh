@@ -6,9 +6,7 @@ fi
 
 # install python required packages
 echo -e '-- Installing required packages --\n'
-pip3 install --upgrade flask flask-migrate flask-script flask-sqlalchemy flask-wtf \
-psycopg2-binary flask-login flask-uploads google-auth requests \
-oauth2client google-api-python-client
+pip3 install --upgrade -r requirements.txt
 
 
 # create the postgresql database

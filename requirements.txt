@@ -1,0 +1,12 @@
+flask
+flask-migrate
+flask-script
+flask-sqlalchemy
+flask-wtf
+psycopg2-binary
+flask-login
+flask-uploads
+google-auth
+requests
+oauth2client
+google-api-python-client

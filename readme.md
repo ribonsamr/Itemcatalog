@@ -4,6 +4,9 @@ The project uses [KnockoutJS](https://knockoutjs.com) library to handle the fron
 ## Config
 Config file can be found at `/config/config.py`.
 
+## Demo Video
+Video: [Link](https://vimeo.com/manage/298002814/)
+
 ## Installation
 You can quickly install the website by running `./install.sh`, this will do all the work needed to run the website. Then you can run the website: `python3 main.py`
 
